@@ -3,9 +3,9 @@
 	<metadata xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
 		<id>SevenZipSharp.Net45</id>
 		<version>1.0.0</version>
-		<authors>Thomas Piart, stevesindelar</authors>
-		<summary></summary>
-		<description></description>
+		<authors>Thomas Piart, markhor</authors>
+		<summary>Managed 7-zip library written in C# that provides data (self-)extraction and compression (all 7-zip formats are supported).</summary>
+		<description>It wraps 7z.dll or any compatible one and makes use of LZMA SDK.</description>
 		<language>en-US</language>
 		<licenseUrl>https://github.com/tomap/SevenZipSharp/license</licenseUrl>
 		<projectUrl>https://github.com/tomap/SevenZipSharp</projectUrl>

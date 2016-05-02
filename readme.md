@@ -5,6 +5,7 @@ Here are the main differences:
 * .Net 4.5 instead of 2.0
 * only .Net 4.5 works (no Mobile or Mono compat, but if you do a PR, ...)
 * has a nuget package (soon)
+* CI with appveyor [![Build status](https://ci.appveyor.com/api/projects/status/vf1xn8e9lqxnpwm8?svg=true)](https://ci.appveyor.com/project/tomap/sevenzipsharp)
 
 ToDo:
 * Convert Console Tests into real Unit tests (MSTest or NUnit or XUnit)
