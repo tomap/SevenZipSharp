@@ -1,0 +1,6 @@
+*.suo
+Backup/
+*.user
+bin/
+obj/
+/SevenZip/UpgradeLog.htm

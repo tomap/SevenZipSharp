@@ -1,6 +1,8 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 10.00
-# Visual Studio 2008
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.25123.0
+MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SevenZip", "SevenZip.csproj", "{4960DD14-3431-47EC-B9D9-9D2730A98DC3}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SevenZipTest", "..\SevenZipTest\SevenZipTest.csproj", "{B87AD11B-B701-496B-B48E-D1D963F2A336}"
