@@ -1,0 +1,30 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 9.00
+# Visual Studio 2005
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SevenZipMono", "SevenZipMono.csproj", "{045ACB46-E27F-4D0F-8B89-7810A8D83DF1}"
+EndProject
+Project("{9344bdbb-3e7f-41fc-a0dd-8665d75ee146}") = "Packages", "Packages.mdproj", "{048BF9B4-619E-4BF9-BEE4-CD4DA085E1E8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SevenZipMonoTest", "SevenZipMonoTest\SevenZipMonoTest.csproj", "{EE68A1FE-4906-4E71-A75A-2D58C0BC1324}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{045ACB46-E27F-4D0F-8B89-7810A8D83DF1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{045ACB46-E27F-4D0F-8B89-7810A8D83DF1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{045ACB46-E27F-4D0F-8B89-7810A8D83DF1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{045ACB46-E27F-4D0F-8B89-7810A8D83DF1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{048BF9B4-619E-4BF9-BEE4-CD4DA085E1E8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{048BF9B4-619E-4BF9-BEE4-CD4DA085E1E8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EE68A1FE-4906-4E71-A75A-2D58C0BC1324}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EE68A1FE-4906-4E71-A75A-2D58C0BC1324}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EE68A1FE-4906-4E71-A75A-2D58C0BC1324}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EE68A1FE-4906-4E71-A75A-2D58C0BC1324}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(MonoDevelopProperties) = preSolution
+		StartupItem = SevenZipMonoTest\SevenZipMonoTest.csproj
+	EndGlobalSection
+EndGlobal

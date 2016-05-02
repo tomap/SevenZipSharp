@@ -1,0 +1,96 @@
+﻿<Window x:Class="SevenZipTestWPF.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="SevenZipSharp WPF Demo" Height="340" Width="340" WindowStartupLocation="CenterScreen" Loaded="Window_Loaded">
+    <Grid>
+        <TabControl HorizontalAlignment="Stretch" Margin="0,0,0,0" Name="tabControl"
+                    VerticalAlignment="Stretch">
+            <TabItem Header="Extract" Name="tabItem_Extract">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="60" />
+                        <RowDefinition Height="60" />
+                        <RowDefinition Height="60" />
+                        <RowDefinition Height="auto" />
+                        <RowDefinition Height="8*" />
+                    </Grid.RowDefinitions>
+                    <GroupBox Grid.Row="0" Header="Progress" HorizontalAlignment="Stretch" Margin="0,0,0,0" VerticalAlignment="Stretch">
+                        <Grid>
+                            <ProgressBar Height="12" HorizontalAlignment="Stretch" Margin="4,4,60,0" 
+                                         Name="pb_Extract1" VerticalAlignment="Top" />
+                            <ProgressBar Height="12" HorizontalAlignment="Stretch" Margin="4,20,60,0" 
+                                         Name="pb_Extract2" VerticalAlignment="Top" />
+                            <Button Content="Extract" Height="28" 
+                                    HorizontalAlignment="Right" Margin="0,4,4,4" Name="b_Extract"
+                                    VerticalAlignment="Top" Width="52" Click="b_Extract_Click" />
+                        </Grid>
+                    </GroupBox>
+                    <GroupBox Grid.Row="1" Header="Output folder" HorizontalAlignment="Stretch" Margin="0,0,0,0" VerticalAlignment="Stretch">
+                        <Grid>
+                            <TextBox Height="24" Name="tb_ExtractFolder" HorizontalAlignment="Stretch" Margin="4,4,60,4" />
+                            <Button Content="Browse" Height="27" 
+                                        HorizontalAlignment="Right" Margin="0,4,4,0" Name="b_Folder"
+                                        VerticalAlignment="Top" Width="52" Click="b_Folder_Click" />
+                        </Grid>
+                    </GroupBox>
+                    <GroupBox Grid.Row="2" Header="Archive file name" HorizontalAlignment="Stretch" Margin="0,0,0,0" Name="gb_Archive" VerticalAlignment="Stretch">
+                        <Grid>
+                            <TextBox Height="24" Name="tb_ExtractArchive" HorizontalAlignment="Stretch" Margin="4,4,60,4" />
+                            <Button Content="Browse" Height="27" 
+                                        HorizontalAlignment="Right" Margin="0,4,4,0" Name="b_Archive"
+                                        VerticalAlignment="Top" Width="52" Click="b_Archive_Click" />
+                        </Grid>
+                    </GroupBox>
+                    <TextBox Grid.Row="3" Margin="4,4,4,0"
+                             Name="tb_Messages" UseLayoutRounding="False"
+                             TextWrapping="Wrap" IsReadOnly="True" VerticalScrollBarVisibility="Visible" Height="77.04" VerticalAlignment="Top" />
+                </Grid>
+            </TabItem>
+            <TabItem Header="Compress" Name="tabItem_Compress">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="60" />
+                        <RowDefinition Height="60" />
+                        <RowDefinition Height="60" />
+                        <RowDefinition Height="auto" />
+                    </Grid.RowDefinitions>
+                    <GroupBox Grid.Row="0" Header="Progress" HorizontalAlignment="Stretch" Margin="0,0,0,0" VerticalAlignment="Stretch">
+                        <Grid>
+                            <ProgressBar Height="12" HorizontalAlignment="Stretch" Margin="4,4,60,0" 
+                                         Name="pb_Compress" VerticalAlignment="Top" />
+                            <Button Content="Pack" Height="28" 
+                                    HorizontalAlignment="Right" Margin="0,4,4,4" Name="b_Compress"
+                                    VerticalAlignment="Top" Width="52" Click="b_Compress_Click" />
+                            <Label Content="Status" Height="24" HorizontalAlignment="Left" Margin="0,12,0,0" Name="l_CompressStatus" VerticalAlignment="Top" Width="230" />
+                        </Grid>
+                    </GroupBox>
+                    <GroupBox Grid.Row="1" Header="Folder to compress" HorizontalAlignment="Stretch" Margin="0,0,0,0" Name="gb_Output" VerticalAlignment="Stretch">
+                        <Grid>
+                            <TextBox Height="24" Name="tb_CompressFolder" HorizontalAlignment="Stretch" Margin="4,4,60,4" />
+                            <Button Content="Browse" Height="27" 
+                                        HorizontalAlignment="Right" Margin="0,4,4,0" Name="b_CompressFolder"
+                                        VerticalAlignment="Top" Width="52" Click="b_CompressFolder_Click" />
+                        </Grid>
+                    </GroupBox>
+                    <GroupBox Grid.Row="2" Header="Archive file name" HorizontalAlignment="Stretch" Margin="0,0,0,0" VerticalAlignment="Stretch">
+                        <Grid>
+                            <TextBox Height="24" Name="tb_CompressArchive" HorizontalAlignment="Stretch" Margin="4,4,60,4" />
+                            <Button Content="Browse" Height="27" 
+                                        HorizontalAlignment="Right" Margin="0,4,4,0" Name="b_CompressArchive"
+                                        VerticalAlignment="Top" Width="52" Click="b_CompressArchive_Click" />
+                        </Grid>
+                    </GroupBox>
+                    <GroupBox Grid.Row="3" Header="Settings" Height="89" HorizontalAlignment="Stretch" Margin="0,0,0,-12" VerticalAlignment="Stretch">
+                        <Grid>
+                            <Slider Height="26" HorizontalAlignment="Left" Margin="117,8,0,0" Name="slider_Level" VerticalAlignment="Top" Width="100" Maximum="5" Value="3" TickPlacement="BottomRight" />
+                            <Label Content="Compression level" Height="28" HorizontalAlignment="Left" Margin="4,4,0,0" Name="label1" VerticalAlignment="Top" />
+                            <Label Content="Normal" Height="25" HorizontalAlignment="Left" Margin="223,4,0,0" Name="label2" VerticalAlignment="Top" Width="69" />
+                            <Label Content="Format" Height="25" HorizontalAlignment="Left" Margin="6,32,0,0" Name="label3" VerticalAlignment="Top" />
+                            <ComboBox Height="23" HorizontalAlignment="Left" Margin="117,34,0,0" Name="cb_Format" VerticalAlignment="Top" Width="100" />
+                        </Grid>
+                    </GroupBox>
+                </Grid>
+            </TabItem>
+        </TabControl>
+    </Grid>
+</Window>
