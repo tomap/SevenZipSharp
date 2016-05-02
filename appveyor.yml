@@ -1,0 +1,31 @@
+version: '1.0.{build}.0'
+
+configuration: Release
+
+assembly_info:
+  patch: true
+  file: '**\AssemblyInfo.*'
+  assembly_version: '{version}'
+  assembly_file_version: '{version}'
+  assembly_informational_version: '{version}'
+
+before_build:
+  nuget restore SevenZip\SevenZip.sln
+
+build:
+  parallel: true
+  project: 'SevenZip\SevenZip.sln'
+  publish_nuget: true
+
+after_build:
+  - cmd: nuget pack package.nuspec -version "%APPVEYOR_BUILD_VERSION%"
+
+artifacts:
+  path: 'SevenZip*.nupkg'
+
+deploy:
+  provider: NuGet
+  api_key:
+    secure: srBMVDnPbP0bAvQALTu0Pi+wQWUWCSDExxmbN5HQ/kDXQvvzf/hPwdV5e4zBnhVG
+  artifact: /SevenZip.*\.nupkg/
+  skip_symbols: false
