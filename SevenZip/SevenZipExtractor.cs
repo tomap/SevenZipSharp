@@ -410,8 +410,7 @@ namespace SevenZip
             }
             else
             {
-                if (!_fileName.EndsWith(".001", StringComparison.OrdinalIgnoreCase)
-                    || (_volumeFileNames.Count == 1))
+                if (!_fileName.EndsWith(".001", StringComparison.OrdinalIgnoreCase))
                 {
                     _archiveStream = new InStreamWrapper(
                         new ArchiveEmulationStreamProxy(new FileStream(
@@ -760,9 +759,14 @@ namespace SevenZip
             _archiveFileData = null;
             _archiveProperties = null;
             _archiveFileInfoCollection = null;
-            _inStream.Dispose();
-            _inStream = null;
-            if (_openCallback != null)
+            
+	    if (_inStream != null)
+	    {
+                _inStream.Dispose();
+                _inStream = null;
+	    }
+            
+	    if (_openCallback != null)
             {
                 try
                 {
