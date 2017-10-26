@@ -186,7 +186,68 @@ namespace SevenZip
         /// Microsoft virtual hard disk file format.
         /// </summary>
         /// <remarks><a href="http://en.wikipedia.org/wiki/VHD_%28file_format%29">Wikipedia information</a></remarks>
-        Vhd
+        Vhd,
+        /// <summary>
+        /// SquashFS file system format.
+        /// </summary>
+        /// <remarks><a href="https://en.wikipedia.org/wiki/SquashFS">Wikipedia information</a></remarks>
+        SquashFS,
+        /// <summary>
+        /// Lzma86 file format.
+        /// </summary>
+        Lzma86,
+        /// <summary>
+        /// Prediction by Partial Matching by Dmitry algorithm.
+        /// </summary>
+        /// <remarks><a href="https://en.wikipedia.org/wiki/Prediction_by_partial_matching">Wikipedia information</a></remarks>
+        Ppmd,
+        /// <summary>
+        /// TE format.
+        /// </summary>
+        TE,
+        /// <summary>
+        /// UEFIc format.
+        /// </summary>
+        /// <remarks><a href="https://en.wikipedia.org/wiki/Unified_Extensible_Firmware_Interface">Wikipedia information</a></remarks>
+        UEFIc,
+        /// <summary>
+        /// UEFIs format.
+        /// </summary>
+        /// <remarks><a href="https://en.wikipedia.org/wiki/Unified_Extensible_Firmware_Interface">Wikipedia information</a></remarks>
+        UEFIs,
+        /// <summary>
+        /// Compressed ROM file system format.
+        /// </summary>
+        /// <remarks><a href="https://en.wikipedia.org/wiki/Cramfs">Wikipedia information</a></remarks>
+        CramFS,
+        /// <summary>
+        /// APM format.
+        /// </summary>
+        APM,
+        /// <summary>
+        /// Swfc format.
+        /// </summary>
+        Swfc,
+        /// <summary>
+        /// NTFS file system format.
+        /// </summary>
+        /// <remarks><a href="https://en.wikipedia.org/wiki/NTFS">Wikipedia information</a></remarks>
+        Ntfs,
+        /// <summary>
+        /// FAT file system format.
+        /// </summary>
+        /// <remarks><a href="https://en.wikipedia.org/wiki/File_Allocation_Table">Wikipedia information</a></remarks>
+        Fat,
+        /// <summary>
+        /// MBR format.
+        /// </summary>
+        /// <remarks><a href="https://en.wikipedia.org/wiki/Master_boot_record">Wikipedia information</a></remarks>
+        Mbr,
+        /// <summary>
+        /// Mach-O file format.
+        /// </summary>
+        /// <remarks><a href="https://en.wikipedia.org/wiki/Mach-O">Wikipedia information</a></remarks>
+        MachO
     }
 
 #if COMPRESS
@@ -322,7 +383,7 @@ namespace SevenZip
         /// List of readable archive format interface guids for 7-zip COM interop.
         /// </summary>
         internal static readonly Dictionary<InArchiveFormat, Guid> InFormatGuids =
-            new Dictionary<InArchiveFormat, Guid>(20) 
+            new Dictionary<InArchiveFormat, Guid>(20)
             #region InFormatGuids initialization
 
             {
@@ -356,7 +417,21 @@ namespace SevenZip
                 {InArchiveFormat.PE,        new Guid("23170f69-40c1-278a-1000-000110DD0000")},
                 {InArchiveFormat.Elf,       new Guid("23170f69-40c1-278a-1000-000110DE0000")},
                 {InArchiveFormat.Swf,       new Guid("23170f69-40c1-278a-1000-000110D70000")},
-                {InArchiveFormat.Vhd,       new Guid("23170f69-40c1-278a-1000-000110DC0000")}
+                {InArchiveFormat.Vhd,       new Guid("23170f69-40c1-278a-1000-000110DC0000")},
+                {InArchiveFormat.Flv,       new Guid("23170f69-40c1-278a-1000-000110D60000")},
+                {InArchiveFormat.SquashFS,  new Guid("23170f69-40c1-278a-1000-000110D20000")},
+                {InArchiveFormat.Lzma86,    new Guid("23170f69-40c1-278a-1000-0001100B0000")},
+                {InArchiveFormat.Ppmd,      new Guid("23170f69-40c1-278a-1000-0001100D0000")},
+                {InArchiveFormat.TE,        new Guid("23170f69-40c1-278a-1000-000110CF0000")},
+                {InArchiveFormat.UEFIc,     new Guid("23170f69-40c1-278a-1000-000110D00000")},
+                {InArchiveFormat.UEFIs,     new Guid("23170f69-40c1-278a-1000-000110D10000")},
+                {InArchiveFormat.CramFS,    new Guid("23170f69-40c1-278a-1000-000110D30000")},
+                {InArchiveFormat.APM,       new Guid("23170f69-40c1-278a-1000-000110D40000")},
+                {InArchiveFormat.Swfc,      new Guid("23170f69-40c1-278a-1000-000110D80000")},
+                {InArchiveFormat.Ntfs,      new Guid("23170f69-40c1-278a-1000-000110D90000")},
+                {InArchiveFormat.Fat,       new Guid("23170f69-40c1-278a-1000-000110DA0000")},
+                {InArchiveFormat.Mbr,       new Guid("23170f69-40c1-278a-1000-000110DB0000")},
+                {InArchiveFormat.MachO,     new Guid("23170f69-40c1-278a-1000-000110DF0000")}
             };
 
             #endregion
