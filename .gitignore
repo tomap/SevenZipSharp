@@ -4,3 +4,4 @@ Backup/
 bin/
 obj/
 /SevenZip/UpgradeLog.htm
+/SevenZip/.vs/**
