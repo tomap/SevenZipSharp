@@ -88,7 +88,7 @@
     <Compile Include="Com.cs" />
     <Compile Include="EventArgs.cs" />
     <Compile Include="Exceptions.cs" />
-    <Compile Include="FileSignatureChecker.cs" />
+    <Compile Include="FileChecker.cs" />
     <Compile Include="Formats.cs" />
     <Compile Include="LibraryFeature.cs" />
     <Compile Include="LibraryManager.cs" />
