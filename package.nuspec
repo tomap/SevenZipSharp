@@ -12,8 +12,7 @@
 		<tags>7z sevenzip sevenzipsharp</tags>
 	</metadata>
 	<files>
-		<file src="SevenZip\bin\Release\SevenZipSharp.dll" target="lib\net45" />
-		<file src="SevenZip\bin\Release\SevenZipSharp.pdb" target="lib\net45" />
+		<file src="Stage\Release\SevenZipSharp.dll" target="lib\net45" />
+		<file src="Stage\Release\SevenZipSharp.pdb" target="lib\net45" />
 	</files>
 </package>
-

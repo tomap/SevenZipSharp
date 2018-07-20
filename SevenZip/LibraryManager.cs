@@ -56,8 +56,18 @@ namespace SevenZip
         ///     - Built decoders: LZMA, PPMD, BCJ, BCJ2, COPY, AES-256 Encryption, BZip2, Deflate.
         /// 7z.dll (from the 7-zip distribution) supports every InArchiveFormat for encoding and decoding.
         /// </remarks>
-        private static string _libraryFileName = ConfigurationManager.AppSettings["7zLocation"] ??
-            Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "7z.dll");
+        private static string _libraryFileName = DetermineLibraryFilePath();
+
+        private static string DetermineLibraryFilePath()
+        {
+            if (!string.IsNullOrEmpty(ConfigurationManager.AppSettings["7zLocation"]))
+            {
+                return ConfigurationManager.AppSettings["7zLocation"];
+            }
+
+            return Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), Environment.Is64BitProcess ? "7z64.dll" : "7z.dll");
+        }
+
 #endif
 #if WINCE 		
         private static string _libraryFileName =
@@ -144,7 +154,7 @@ namespace SevenZip
                     }
                     if ((_modulePtr = NativeMethods.LoadLibrary(_libraryFileName)) == IntPtr.Zero)
                     {
-                        throw new SevenZipLibraryException("failed to load library.");
+                        throw new SevenZipLibraryException($"failed to load library from \"{_libraryFileName}\".");
                     }
                     if (NativeMethods.GetProcAddress(_modulePtr, "GetHandlerProperty") == IntPtr.Zero)
                     {
@@ -169,25 +179,6 @@ namespace SevenZip
                     "Enum " + format + " is not a valid archive format attribute!");
             }
         }
-
-        /*/// <summary>
-        /// Gets the native 7zip library version string.
-        /// </summary>
-        public static string LibraryVersion
-        {
-            get
-            {
-                if (String.IsNullOrEmpty(_LibraryVersion))
-                {
-                    FileVersionInfo dllVersionInfo = FileVersionInfo.GetVersionInfo(_libraryFileName);
-                    _LibraryVersion = String.Format(
-                        System.Globalization.CultureInfo.CurrentCulture,
-                        "{0}.{1}",
-                        dllVersionInfo.FileMajorPart, dllVersionInfo.FileMinorPart);
-                }
-                return _LibraryVersion;
-            }
-        }*/
 
         /// <summary>
         /// Gets the value indicating whether the library supports modifying archives.
