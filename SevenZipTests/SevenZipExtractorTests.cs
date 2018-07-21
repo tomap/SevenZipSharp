@@ -1,4 +1,6 @@
-﻿namespace SevenZipTests
+﻿using System;
+
+namespace SevenZipTests
 {
     using System.IO;
 
@@ -16,40 +18,53 @@
         {
             // Ensures we're in the correct working directory (for test data files).
             Directory.SetCurrentDirectory(TestContext.CurrentContext.TestDirectory);
+            Directory.CreateDirectory(OutputDirectory);
+        }
+
+        [TearDown]
+        public void TearDown()
+        {
+            Directory.Delete(OutputDirectory, true);
         }
 
         [Test]
         public void ExtractFilesTest()
         {
-            Directory.CreateDirectory(OutputDirectory);
-
-            using (var tmp = new SevenZipExtractor(@"TestData\7z_LZMA2.7z"))
+            using (var tmp = new SevenZipExtractor(@"TestData\multiple_files.7z"))
             {
                 for (var i = 0; i < tmp.ArchiveFileData.Count; i++)
                 {
-                    tmp.ExtractFiles(@"output\", tmp.ArchiveFileData[i].Index);
+                    tmp.ExtractFiles(OutputDirectory, tmp.ArchiveFileData[i].Index);
                 }
 
-                Assert.AreEqual(1, Directory.GetFiles("output").Length);
+                Assert.AreEqual(3, Directory.GetFiles(OutputDirectory).Length);
+            }
+        }
 
-                // To extract more than 1 file at a time or when you definitely know which files to extract,
-                // use something like
-                //tmp.ExtractFiles(@"d:\Temp\Result", 1, 3, 5);
+        [Test]
+        public void ExtractSpecificFilesTest()
+        {
+            using (var tmp = new SevenZipExtractor(@"TestData\multiple_files.7z"))
+            {
+                tmp.ExtractFiles(OutputDirectory, 0, 2);
+                Assert.AreEqual(2, Directory.GetFiles("output").Length);
             }
 
-            Directory.Delete(OutputDirectory, true);
+            Assert.AreEqual(2, Directory.GetFiles(OutputDirectory).Length);
+            Assert.Contains(Path.Combine(OutputDirectory, "file1.txt"), Directory.GetFiles(OutputDirectory));
+            Assert.Contains(Path.Combine(OutputDirectory, "file3.txt"), Directory.GetFiles(OutputDirectory));
         }
 
         [Test]
         public void ExtractArchiveMultiVolumesTest()
         {
-            Assert.Ignore("No test written.");
-            //SevenZipExtractor.SetLibraryPath(@"d:\Work\Misc\7zip\9.04\CPP\7zip\Bundles\Format7zF\7z.dll");
-            /*using (var tmp = new SevenZipExtractor(@"d:\Temp\The_Name_of_the_Wind.part1.rar"))
+            using (var tmp = new SevenZipExtractor(@"TestData\multivolume.part0001.rar"))
             {                
-                tmp.ExtractArchive(@"d:\Temp\!Пусто");
+                tmp.ExtractArchive(OutputDirectory);
             }
-            //*/
+
+            Assert.AreEqual(1, Directory.GetFiles(OutputDirectory).Length);
+            Assert.IsTrue(File.ReadAllText(Directory.GetFiles(OutputDirectory)[0]).StartsWith("Lorem ipsum dolor sit amet"));
         }
     }
 }
