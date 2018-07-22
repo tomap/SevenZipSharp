@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace SevenZipTests
+﻿namespace SevenZipTests
 {
     using System.IO;
 

@@ -56,7 +56,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="FileCheckerTests.cs" />
+    <Compile Include="InternalBenchmarkTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SevenZipCompressorTests.cs" />
     <Compile Include="SevenZipExtractorTests.cs" />
   </ItemGroup>
   <ItemGroup>
