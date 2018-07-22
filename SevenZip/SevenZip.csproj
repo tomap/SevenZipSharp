@@ -40,31 +40,32 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
+    <OutputPath>..\Stage\$(Configuration)\</OutputPath>
+    <IntermediateOutputPath>..\Stage\obj\$(Configuration)\</IntermediateOutputPath>
     <DefineConstants>TRACE;DEBUG;UNMANAGED, COMPRESS, LZMA_STREAM, DOTNET20</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <RegisterForComInterop>false</RegisterForComInterop>
-    <DocumentationFile>bin\Debug\SevenZipSharp.xml</DocumentationFile>
+    <DocumentationFile>..\Stage\$(Configuration)\SevenZip.XML</DocumentationFile>
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>full</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
+    <OutputPath>..\Stage\$(Configuration)\</OutputPath>
+    <IntermediateOutputPath>..\Stage\obj\$(Configuration)\</IntermediateOutputPath>
     <DefineConstants>TRACE;UNMANAGED, COMPRESS, LZMA_STREAM, DOTNET20</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <RegisterForComInterop>false</RegisterForComInterop>
-    <DocumentationFile>
-    </DocumentationFile>
     <Prefer32Bit>false</Prefer32Bit>
     <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Deploy|AnyCPU' ">
-    <OutputPath>bin\Deploy\</OutputPath>
+    <OutputPath>..\Stage\$(Configuration)\</OutputPath>
+    <IntermediateOutputPath>..\Stage\obj\$(Configuration)\</IntermediateOutputPath>
+    <DocumentationFile>..\Stage\$(Configuration)\SevenZip.XML</DocumentationFile>
     <DefineConstants>TRACE;UNMANAGED, COMPRESS, LZMA_STREAM, CS2</DefineConstants>
-    <DocumentationFile>bin\Release\SevenZip.XML</DocumentationFile>
     <Optimize>true</Optimize>
     <RegisterForComInterop>false</RegisterForComInterop>
     <DebugType>pdbonly</DebugType>
@@ -88,7 +89,7 @@
     <Compile Include="Com.cs" />
     <Compile Include="EventArgs.cs" />
     <Compile Include="Exceptions.cs" />
-    <Compile Include="FileSignatureChecker.cs" />
+    <Compile Include="FileChecker.cs" />
     <Compile Include="Formats.cs" />
     <Compile Include="LibraryFeature.cs" />
     <Compile Include="LibraryManager.cs" />
@@ -130,7 +131,9 @@
     <Content Include="7z.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="7z64.dll" />
+    <Content Include="7z64.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="arch\Test.txt" />
     <Content Include="sfx\Configs.xslt" />
   </ItemGroup>
@@ -177,8 +180,4 @@
   <Target Name="AfterBuild">
   </Target>
   -->
-  <PropertyGroup>
-    <PostBuildEvent>
-    </PostBuildEvent>
-  </PropertyGroup>
 </Project>

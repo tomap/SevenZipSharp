@@ -1,4 +1,4 @@
-version: '1.0.{build}.0'
+version: '1.1.{build}.0'
 
 configuration: Release
 
@@ -10,11 +10,11 @@ assembly_info:
   assembly_informational_version: '{version}'
 
 before_build:
-  nuget restore SevenZip\SevenZip.sln
+  nuget restore SevenZip.sln
 
 build:
   parallel: true
-  project: 'SevenZip\SevenZip.sln'
+  project: 'SevenZip.sln'
   publish_nuget: true
 
 after_build:
@@ -26,6 +26,8 @@ artifacts:
 deploy:
   provider: NuGet
   api_key:
-    secure: srBMVDnPbP0bAvQALTu0Pi+wQWUWCSDExxmbN5HQ/kDXQvvzf/hPwdV5e4zBnhVG
+    secure: AWbl6aAa09NxVWFo9EDRC12RhY090havc8aWB9j0S4crFvICIkIvON0gUxG2q8QZ
   artifact: /SevenZip.*\.nupkg/
   skip_symbols: false
+  on:
+    branch: master

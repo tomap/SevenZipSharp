@@ -1,7 +1,10 @@
 *.suo
 Backup/
 *.user
-bin/
-obj/
+/*/bin/**
+/*/obj/**
 /SevenZip/UpgradeLog.htm
 /SevenZip/.vs/**
+.vs/**
+/packages/**
+/[Ss]tage/**
