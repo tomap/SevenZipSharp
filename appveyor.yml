@@ -21,7 +21,7 @@ after_build:
   - cmd: nuget pack package.nuspec -version "%APPVEYOR_BUILD_VERSION%"
 
 artifacts:
-  path: 'SevenZip*.nupkg'
+  path: 'Squid-Box.SevenZip*.nupkg'
 
 deploy:
   provider: NuGet
