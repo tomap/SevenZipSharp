@@ -2,7 +2,6 @@
 <package xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 	<metadata xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
 		<id>Squid-Box.SevenZipSharp</id>
-		<title>SevenZipSharp</title>
 		<version>1.1.0</version>
 		<authors>Joel Ahlgren, Thomas Piart, markhor</authors>
 		<summary>Managed 7-zip library written in C# that provides data (self-)extraction and compression (all 7-zip formats are supported).</summary>
