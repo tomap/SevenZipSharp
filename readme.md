@@ -1,10 +1,10 @@
-This is a fork from @tomap's fork of the original Codeplex project.
+This is a fork from [tomap's fork](https://github.com/tomap/SevenZipSharp) of the [original Codeplex project](https://archive.codeplex.com/?p=sevenzipsharp).
 
 Main differences from the original project:
 * VS 2015 project
 * .Net 4.5 instead of 2.0
 * Only .Net 4.5 works (no Mobile or Mono compatibility, but if you do a PR ...)
-* Has a nuget package **Link TBD**
+* Has a nuget package: https://www.nuget.org/packages/Squid-Box.SevenZipSharp/
 * CI with appveyor [![Build status](https://ci.appveyor.com/api/projects/status/bgp7yh7f0fpamt95?svg=true)](https://ci.appveyor.com/project/squid-box/sevenzipsharp)
 
 Issues, suggestions, and Pull Requests are welcome!
