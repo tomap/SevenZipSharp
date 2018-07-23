@@ -1,17 +1,17 @@
 ﻿namespace SevenZipTests
 {
+    using System;
     using System.Collections.Generic;
     using System.IO;
+    using System.Threading;
 
     using SevenZip;
 
     using NUnit.Framework;
 
     [TestFixture]
-    public class SevenZipExtractorTests
+    public class SevenZipExtractorTests : TestBase
     {
-        private const string OutputDirectory = "output";
-
         public static List<TestFile> TestFiles
         {
             get
@@ -30,20 +30,6 @@
 
                 return result;
             }
-        }
-
-        [SetUp]
-        public void SetUp()
-        {
-            // Ensures we're in the correct working directory (for test data files).
-            Directory.SetCurrentDirectory(TestContext.CurrentContext.TestDirectory);
-            Directory.CreateDirectory(OutputDirectory);
-        }
-
-        [TearDown]
-        public void TearDown()
-        {
-            Directory.Delete(OutputDirectory, true);
         }
 
         [Test]
@@ -134,6 +120,43 @@
             Assert.AreEqual("file2", File.ReadAllText(extractedFile));
         }
 
+        [Test]
+        public void ThreadedExtractionTest()
+        {
+            Assert.Ignore("Not translated yet.");
+
+            var t1 = new Thread(() =>
+            {
+                using (var tmp = new SevenZipExtractor(@"D:\Temp\7z465_extra.7z"))
+                {
+                    tmp.FileExtractionStarted += (s, e) =>
+                    {
+                        Console.WriteLine(String.Format("[{0}%] {1}",
+                            e.PercentDone, e.FileInfo.FileName));
+                    };
+                    tmp.ExtractionFinished += (s, e) => { Console.WriteLine("Finished!"); };
+                    tmp.ExtractArchive(@"D:\Temp\t1");
+                }
+            });
+            var t2 = new Thread(() =>
+            {
+                using (var tmp = new SevenZipExtractor(@"D:\Temp\7z465_extra.7z"))
+                {
+                    tmp.FileExtractionStarted += (s, e) =>
+                    {
+                        Console.WriteLine(String.Format("[{0}%] {1}",
+                            e.PercentDone, e.FileInfo.FileName));
+                    };
+                    tmp.ExtractionFinished += (s, e) => { Console.WriteLine("Finished!"); };
+                    tmp.ExtractArchive(@"D:\Temp\t2");
+                }
+            });
+            t1.Start();
+            t2.Start();
+            t1.Join();
+            t2.Join();
+        }
+
         [Test, TestCaseSource(nameof(TestFiles))]
         public void ExtractDifferentFormatsTest(TestFile file)
         {
@@ -146,7 +169,7 @@
                 }
                 catch (SevenZipException)
                 {
-                    Assert.Warn("Old issue, needs to be investigated.");
+                    Assert.Warn("Legacy bug, needs to be investigated.");
                 }
             }
         }

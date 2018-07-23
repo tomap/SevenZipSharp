@@ -352,6 +352,16 @@ namespace SevenZip
         /// <param name="dest">The destination stream to wrie to.</param>
         private static void WriteStream(Stream src, Stream dest)
         {
+            if (src == null)
+            {
+                throw new ArgumentNullException(nameof(src));
+            }
+
+            if (dest == null)
+            {
+                throw new ArgumentNullException(nameof(dest));
+            }
+
             src.Seek(0, SeekOrigin.Begin);
             var buf = new byte[32768];
             int bytesRead;
@@ -410,7 +420,9 @@ namespace SevenZip
             {
                 throw new ArgumentException("The specified output stream can not write.", "sfxStream");
             }
+
             ValidateSettings(settings);
+
             using (Stream sfx = _module == SfxModule.Default
                                     ? Assembly.GetExecutingAssembly().GetManifestResourceStream(
                                             GetResourceString(SfxSupportedModuleNames[_module][0]))
