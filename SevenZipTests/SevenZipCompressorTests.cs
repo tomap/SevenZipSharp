@@ -1,5 +1,6 @@
 ﻿namespace SevenZipTests
 {
+    using System;
     using System.Collections.Generic;
     using System.IO;
     using System.Linq;
@@ -13,6 +14,23 @@
     {
         private const string OutputDirectory = "output";
         private readonly string _temporaryFile = Path.Combine(OutputDirectory, "tmp.7z");
+
+        /// <summary>
+        /// TestCaseSource for CompressDifferentFormatsTest
+        /// </summary>
+        public static List<CompressionMethod> CompressionMethods
+        {
+            get
+            {
+                var result = new List<CompressionMethod>();
+                foreach(CompressionMethod format in Enum.GetValues(typeof(CompressionMethod)))
+                {
+                    result.Add(format);
+                }
+
+                return result;
+            }
+        }
 
         [SetUp]
         public void SetUp()
@@ -158,6 +176,20 @@
 
             Assert.AreEqual(3, Directory.GetFiles(OutputDirectory).Length);
             Assert.IsTrue(File.Exists($"{_temporaryFile}.003"));
+        }
+
+        [Test, TestCaseSource(nameof(CompressionMethods))]
+        public void CompressDifferentFormatsTest(CompressionMethod method)
+        {
+            var compressor = new SevenZipCompressor
+            {
+                ArchiveFormat = OutArchiveFormat.SevenZip,
+                CompressionMethod = method
+            };
+
+            compressor.CompressFiles(_temporaryFile, @"TestData\zip.zip");
+
+            Assert.IsTrue(File.Exists(_temporaryFile));
         }
     }
 }

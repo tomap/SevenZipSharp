@@ -86,7 +86,55 @@
             Assert.IsTrue(File.ReadAllText(Directory.GetFiles(OutputDirectory)[0]).StartsWith("Lorem ipsum dolor sit amet"));
         }
 
-        [TestCaseSource(nameof(TestFiles)), Category("FormatExtraction")]
+        [Test]
+        public void ExtractionWithCancellationTest()
+        {
+            using (var tmp = new SevenZipExtractor(@"TestData\multiple_files.7z"))
+            {
+                tmp.FileExtractionStarted += (s, e) =>
+                {
+                    if (e.FileInfo.Index == 2)
+                    {
+                        e.Cancel = true;
+                    }
+                };
+               
+                tmp.ExtractArchive(OutputDirectory);
+
+                Assert.AreEqual(2, Directory.GetFiles(OutputDirectory).Length);
+            }
+        }
+
+        [Test]
+        public void ExtractionFromStreamTest()
+        {
+            using (var tmp = new SevenZipExtractor(File.OpenRead(@"TestData\multiple_files.7z")))
+            {
+                tmp.ExtractArchive(OutputDirectory);
+
+                Assert.AreEqual(3, Directory.GetFiles(OutputDirectory).Length);
+            }
+        }
+
+        [Test]
+        public void ExtractionToStreamTest()
+        {
+            using (var tmp = new SevenZipExtractor(@"TestData\multiple_files.7z"))
+            {
+                using (var fileStream = new FileStream(Path.Combine(OutputDirectory, "streamed_file.txt"), FileMode.Create))
+                {
+                    tmp.ExtractFile(1, fileStream);
+                }
+            }
+
+            Assert.AreEqual(1, Directory.GetFiles(OutputDirectory).Length);
+
+            var extractedFile = Directory.GetFiles(OutputDirectory)[0];
+
+            Assert.AreEqual("file2", File.ReadAllText(extractedFile));
+        }
+
+        [Test, TestCaseSource(nameof(TestFiles))]
         public void ExtractDifferentFormatsTest(TestFile file)
         {
             using (var extractor = new SevenZipExtractor(file.FilePath))
