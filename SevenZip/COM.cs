@@ -1,34 +1,18 @@
-﻿/*  This file is part of SevenZipSharp.
-
-    SevenZipSharp is free software: you can redistribute it and/or modify
-    it under the terms of the GNU Lesser General public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
-
-    SevenZipSharp is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU Lesser General public License for more details.
-
-    You should have received a copy of the GNU Lesser General public License
-    along with SevenZipSharp.  If not, see <http://www.gnu.org/licenses/>.
-*/
-
-using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.IO;
-using System.Runtime.InteropServices;
-using System.Security.Permissions;
+﻿namespace SevenZip
+{
+    using System;
+    using System.Collections.Generic;
+    using System.Globalization;
+    using System.IO;
+    using System.Runtime.InteropServices;
+    using System.Security.Permissions;
 #if !WINCE
-using FILETIME=System.Runtime.InteropServices.ComTypes.FILETIME;
+    using FILETIME = System.Runtime.InteropServices.ComTypes.FILETIME;
 #elif WINCE
-using FILETIME=OpenNETCF.Runtime.InteropServices.ComTypes.FILETIME;
+    using FILETIME=OpenNETCF.Runtime.InteropServices.ComTypes.FILETIME;
 #endif
 
-namespace SevenZip
-{
-    #if UNMANAGED
+#if UNMANAGED
 
     /// <summary>
     /// The structure to fix x64 and x32 variant size mismatch.
