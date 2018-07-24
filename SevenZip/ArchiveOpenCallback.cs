@@ -24,13 +24,7 @@ namespace SevenZip
         /// <summary>
         /// Gets the list of volume file names.
         /// </summary>
-        public IList<string> VolumeFileNames
-        {
-            get
-            {
-                return _volumeFileNames;
-            }
-        }
+        public IList<string> VolumeFileNames => _volumeFileNames;
 
         /// <summary>
         /// Performs the common initialization.

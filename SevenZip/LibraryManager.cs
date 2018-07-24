@@ -147,15 +147,15 @@ namespace SevenZip
                     }
                 }
 #endif
-                if (format is InArchiveFormat)
+                if (format is InArchiveFormat archiveFormat)
                 {
-                    InitUserInFormat(user, (InArchiveFormat)format);
+                    InitUserInFormat(user, archiveFormat);
                     return;
                 }
 #if COMPRESS
-                if (format is OutArchiveFormat)
+                if (format is OutArchiveFormat outArchiveFormat)
                 {
-                    InitUserOutFormat(user, (OutArchiveFormat)format);
+                    InitUserOutFormat(user, outArchiveFormat);
                     return;
                 }
 #endif
@@ -241,18 +241,25 @@ namespace SevenZip
                     {
                         return _features.Value;
                     }
+
                     _features = LibraryFeature.None;
+
                     #region Benchmark
+
                     #region Extraction features
+
                     using (var outStream = new MemoryStream())
                     {
                         ExtractionBenchmark("Test.lzma.7z", outStream, ref _features, LibraryFeature.Extract7z);
                         ExtractionBenchmark("Test.lzma2.7z", outStream, ref _features, LibraryFeature.Extract7zLZMA2);
-                        int i = 0;
+
+                        var i = 0;
+
                         if (ExtractionBenchmark("Test.bzip2.7z", outStream, ref _features, _features.Value))
                         {
                             i++;
                         }
+
                         if (ExtractionBenchmark("Test.ppmd.7z", outStream, ref _features, _features.Value))
                         {
                             i++;
@@ -262,6 +269,7 @@ namespace SevenZip
                                 _features |= LibraryFeature.Extract7zAll;
                             }
                         }
+
                         ExtractionBenchmark("Test.rar", outStream, ref _features, LibraryFeature.ExtractRar);
                         ExtractionBenchmark("Test.tar", outStream, ref _features, LibraryFeature.ExtractTar);
                         ExtractionBenchmark("Test.txt.bz2", outStream, ref _features, LibraryFeature.ExtractBzip2);
@@ -269,11 +277,15 @@ namespace SevenZip
                         ExtractionBenchmark("Test.txt.xz", outStream, ref _features, LibraryFeature.ExtractXz);
                         ExtractionBenchmark("Test.zip", outStream, ref _features, LibraryFeature.ExtractZip);
                     }
+
                     #endregion
+
                     #region Compression features
+
                     using (var inStream = new MemoryStream())
                     {
                         inStream.Write(Encoding.UTF8.GetBytes("Test"), 0, 4);
+
                         using (var outStream = new MemoryStream())
                         {
                             CompressionBenchmark(inStream, outStream,
@@ -282,13 +294,16 @@ namespace SevenZip
                             CompressionBenchmark(inStream, outStream,
                                 OutArchiveFormat.SevenZip, CompressionMethod.Lzma2,
                                 ref _features, LibraryFeature.Compress7zLZMA2);
-                            int i = 0;
+
+                            var i = 0;
+
                             if (CompressionBenchmark(inStream, outStream,
                                 OutArchiveFormat.SevenZip, CompressionMethod.BZip2,
                                 ref _features, _features.Value))
                             {
                                 i++;
                             }
+
                             if (CompressionBenchmark(inStream, outStream,
                                 OutArchiveFormat.SevenZip, CompressionMethod.Ppmd,
                                 ref _features, _features.Value))
@@ -300,6 +315,7 @@ namespace SevenZip
                                     _features |= LibraryFeature.Compress7zAll;
                                 }
                             }
+
                             CompressionBenchmark(inStream, outStream,
                                 OutArchiveFormat.Zip, CompressionMethod.Default,
                                 ref _features, LibraryFeature.CompressZip);
@@ -317,12 +333,16 @@ namespace SevenZip
                                 ref _features, LibraryFeature.CompressXz);
                         }
                     }
+
                     #endregion
+
                     #endregion
+
                     if (ModifyCapable && (_features.Value & LibraryFeature.Compress7z) != 0)
                     {
                         _features |= LibraryFeature.Modify;
                     }
+
                     return _features.Value;
                 }
             }
@@ -343,18 +363,18 @@ namespace SevenZip
 			{
                 if (_modulePtr != IntPtr.Zero)
             {
-                if (format is InArchiveFormat)
+                if (format is InArchiveFormat archiveFormat)
                 {
                     if (_inArchives != null && _inArchives.ContainsKey(user) &&
-                        _inArchives[user].ContainsKey((InArchiveFormat) format) &&
-                        _inArchives[user][(InArchiveFormat) format] != null)
+                        _inArchives[user].ContainsKey(archiveFormat) &&
+                        _inArchives[user][archiveFormat] != null)
                     {
                         try
                         {                            
-                            Marshal.ReleaseComObject(_inArchives[user][(InArchiveFormat) format]);
+                            Marshal.ReleaseComObject(_inArchives[user][archiveFormat]);
                         }
                         catch (InvalidComObjectException) {}
-                        _inArchives[user].Remove((InArchiveFormat) format);
+                        _inArchives[user].Remove(archiveFormat);
                         _totalUsers--;
                         if (_inArchives[user].Count == 0)
                         {
@@ -363,18 +383,18 @@ namespace SevenZip
                     }
                 }
 #if COMPRESS
-                if (format is OutArchiveFormat)
+                if (format is OutArchiveFormat outArchiveFormat)
                 {
                     if (_outArchives != null && _outArchives.ContainsKey(user) &&
-                        _outArchives[user].ContainsKey((OutArchiveFormat) format) &&
-                        _outArchives[user][(OutArchiveFormat) format] != null)
+                        _outArchives[user].ContainsKey(outArchiveFormat) &&
+                        _outArchives[user][outArchiveFormat] != null)
                     {
                         try
                         {
-                            Marshal.ReleaseComObject(_outArchives[user][(OutArchiveFormat) format]);
+                            Marshal.ReleaseComObject(_outArchives[user][outArchiveFormat]);
                         }
                         catch (InvalidComObjectException) {}
-                        _outArchives[user].Remove((OutArchiveFormat) format);
+                        _outArchives[user].Remove(outArchiveFormat);
                         _totalUsers--;
                         if (_outArchives[user].Count == 0)
                         {
@@ -492,10 +512,6 @@ namespace SevenZip
                         Marshal.GetDelegateForFunctionPointer(
                             NativeMethods.GetProcAddress(_modulePtr, "CreateObject"),
                             typeof(NativeMethods.CreateObjectDelegate));
-                    if (createObject == null)
-                    {
-                        throw new SevenZipLibraryException();
-                    }
 #endif
                     object result;
                     Guid interfaceId =

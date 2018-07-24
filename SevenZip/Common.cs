@@ -65,7 +65,7 @@ namespace SevenZip
             ((SevenZipBase)ar.AsyncState).ReleaseContext();
         }
 
-        virtual internal void SaveContext(
+        internal virtual void SaveContext(
 #if !DOTNET20
 DispatcherPriority priority = DispatcherPriority.Normal
 #endif
@@ -80,7 +80,7 @@ DispatcherPriority priority = DispatcherPriority.Normal
             NeedsToBeRecreated = true;
         }
 
-        virtual internal void ReleaseContext()
+        internal virtual void ReleaseContext()
         {
 #if !DOTNET20
             Dispatcher = null;
@@ -141,11 +141,11 @@ Dispatcher == null
                     if (synchronous)
                     {
                         // Could be just handler(this, e);
-                        this.Context.Send(callback, new object[] { handler, this, e });
+                        Context.Send(callback, new object[] { handler, this, e });
                     }
                     else
                     {
-                        this.Context.Post(callback, new object[] { handler, this, e });
+                        Context.Post(callback, new object[] { handler, this, e });
                     }
 #endif
                     }
@@ -191,13 +191,7 @@ Dispatcher == null
         /// <summary>
         /// Gets the unique identificator of this SevenZipBase instance.
         /// </summary>
-        public int UniqueID
-        {
-            get
-            {
-                return _uniqueID;
-            }
-        }
+        public int UniqueID => _uniqueID;
 
         /// <summary>
         /// User exceptions thrown during the requested operations, for example, in events.
@@ -263,35 +257,17 @@ Dispatcher == null
         /// <summary>
         /// Gets or sets the archive password
         /// </summary>
-        public string Password
-        {
-            get
-            {
-                return _password;
-            }
-        }
+        public string Password => _password;
 
         /// <summary>
         /// Gets or sets throw exceptions on archive errors flag
         /// </summary>
-        internal bool ReportErrors
-        {
-            get
-            {
-                return _reportErrors;
-            }
-        }
+        internal bool ReportErrors => _reportErrors;
 
         /// <summary>
         /// Gets the user exceptions thrown during the requested operations, for example, in events.
         /// </summary>
-        internal ReadOnlyCollection<Exception> Exceptions
-        {
-            get
-            {
-                return new ReadOnlyCollection<Exception>(_exceptions);
-            }
-        }
+        internal ReadOnlyCollection<Exception> Exceptions => new ReadOnlyCollection<Exception>(_exceptions);
 
         internal void AddException(Exception e)
         {
@@ -303,13 +279,7 @@ Dispatcher == null
             _exceptions.Clear();
         }
 
-        internal bool HasExceptions
-        {
-            get
-            {
-                return _exceptions.Count > 0;
-            }
-        }
+        internal bool HasExceptions => _exceptions.Count > 0;
 
         /// <summary>
         /// Throws the specified exception when is able to.
@@ -380,13 +350,7 @@ Dispatcher == null
         /// Gets the current library features.
         /// </summary>
         [CLSCompliant(false)]
-        public static LibraryFeature CurrentLibraryFeatures
-        {
-            get
-            {
-                return SevenZipLibraryManager.CurrentLibraryFeatures;
-            }
-        }
+        public static LibraryFeature CurrentLibraryFeatures => SevenZipLibraryManager.CurrentLibraryFeatures;
 
         /// <summary>
         /// Determines whether the specified System.Object is equal to the current SevenZipBase.
@@ -468,13 +432,7 @@ Dispatcher == null
         /// <summary>
         /// Gets or sets the archive password
         /// </summary>
-        public string Password
-        {
-            get
-            {
-                return _password;
-            }
-        }
+        public string Password => _password;
 
         /// <summary>
         /// Gets or sets the value indicating whether the current procedure was cancelled.
@@ -484,24 +442,12 @@ Dispatcher == null
         /// <summary>
         /// Gets or sets throw exceptions on archive errors flag
         /// </summary>
-        public bool ReportErrors
-        {
-            get
-            {
-                return _reportErrors;
-            }
-        }
+        public bool ReportErrors => _reportErrors;
 
         /// <summary>
         /// Gets the user exceptions thrown during the requested operations, for example, in events.
         /// </summary>
-        public ReadOnlyCollection<Exception> Exceptions
-        {
-            get
-            {
-                return new ReadOnlyCollection<Exception>(_exceptions);
-            }
-        }
+        public ReadOnlyCollection<Exception> Exceptions => new ReadOnlyCollection<Exception>(_exceptions);
 
         public void AddException(Exception e)
         {
@@ -513,13 +459,7 @@ Dispatcher == null
             _exceptions.Clear();
         }
 
-        public bool HasExceptions
-        {
-            get
-            {
-                return _exceptions.Count > 0;
-            }
-        }
+        public bool HasExceptions => _exceptions.Count > 0;
 
         /// <summary>
         /// Throws the specified exception when is able to.
@@ -628,7 +568,7 @@ Dispatcher == null
         /// <returns>true if the specified System.Object is equal to the current ArchiveFileInfo; otherwise, false.</returns>
         public override bool Equals(object obj)
         {
-            return (obj is ArchiveFileInfo) ? Equals((ArchiveFileInfo)obj) : false;
+            return (obj is ArchiveFileInfo info) && Equals(info);
         }
 
         /// <summary>
@@ -704,7 +644,7 @@ Dispatcher == null
         /// <returns>true if the specified System.Object is equal to the current ArchiveProperty; otherwise, false.</returns>
         public override bool Equals(object obj)
         {
-            return (obj is ArchiveProperty) ? Equals((ArchiveProperty)obj) : false;
+            return (obj is ArchiveProperty property) && Equals(property);
         }
 
         /// <summary>

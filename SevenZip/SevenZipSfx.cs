@@ -97,23 +97,14 @@
         /// <summary>
         /// Gets the sfx module type.
         /// </summary>
-        public SfxModule SfxModule
-        {
-            get
-            {
-                return _module;
-            }
-        }
+        public SfxModule SfxModule => _module;
 
         /// <summary>
         /// Gets or sets the custom sfx module file name
         /// </summary>
         public string ModuleFileName
         {
-            get
-            {
-                return _moduleFileName;
-            }
+            get => _moduleFileName;
 
             set
             {
@@ -121,10 +112,12 @@
                 {
                     throw new ArgumentException("The specified file does not exist.");
                 }
+
                 _moduleFileName = value;
                 _module = SfxModule.Custom;
-                string sfxName = Path.GetFileName(value);
-                foreach (SfxModule mod in SfxSupportedModuleNames.Keys)
+                var sfxName = Path.GetFileName(value);
+
+                foreach (var mod in SfxSupportedModuleNames.Keys)
                 {
                     if (SfxSupportedModuleNames[mod].Contains(sfxName))
                     {

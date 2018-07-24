@@ -946,14 +946,12 @@ Enum.GetName(typeof(ZipEncryptionMethod), ZipEncryptionMethod))
         /// </summary>
         public OutArchiveFormat ArchiveFormat
         {
-            get
-            {
-                return _archiveFormat;
-            }
+            get => _archiveFormat;
 
             set
             {
                 _archiveFormat = value;
+
                 if (!MethodIsValid(_compressionMethod))
                 {
                     _compressionMethod = CompressionMethod.Default;
@@ -966,15 +964,9 @@ Enum.GetName(typeof(ZipEncryptionMethod), ZipEncryptionMethod))
         /// </summary>
         public CompressionMethod CompressionMethod
         {
-            get
-            {
-                return _compressionMethod;
-            }
+            get => _compressionMethod;
 
-            set
-            {
-                _compressionMethod = !MethodIsValid(value) ? CompressionMethod.Default : value;
-            }
+            set => _compressionMethod = !MethodIsValid(value) ? CompressionMethod.Default : value;
         }
 
         /// <summary>
@@ -982,15 +974,9 @@ Enum.GetName(typeof(ZipEncryptionMethod), ZipEncryptionMethod))
         /// </summary>
         public int VolumeSize
         {
-            get
-            {
-                return _volumeSize;
-            }
+            get => _volumeSize;
 
-            set
-            {
-                _volumeSize = value > 0 ? value : 0;
-            }
+            set => _volumeSize = value > 0 ? value : 0;
         }
         #endregion
 
@@ -1944,14 +1930,8 @@ Enum.GetName(typeof(ZipEncryptionMethod), ZipEncryptionMethod))
         /// </summary>
         public static int LzmaDictionarySize
         {
-            get
-            {
-                return _lzmaDictionarySize;
-            }
-            set
-            {
-                _lzmaDictionarySize = value;
-            }
+            get => _lzmaDictionarySize;
+            set => _lzmaDictionarySize = value;
         }
 
         internal static void WriteLzmaProperties(Encoder encoder)

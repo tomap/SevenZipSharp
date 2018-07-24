@@ -67,13 +67,7 @@ namespace SevenZip
         /// <summary>
         /// Gets the worker stream for reading, writing and seeking.
         /// </summary>
-        protected Stream BaseStream
-        {
-            get
-            {
-                return _baseStream;
-            }
-        }
+        protected Stream BaseStream => _baseStream;
 
         #region IDisposable Members
 
@@ -170,10 +164,7 @@ namespace SevenZip
 
         private void OnBytesRead(IntEventArgs e)
         {
-            if (BytesRead != null)
-            {
-                BytesRead(this, e);
-            }
+            BytesRead?.Invoke(this, e);
         }
     }
 
@@ -239,10 +230,7 @@ namespace SevenZip
 
         private void OnBytesWritten(IntEventArgs e)
         {
-            if (BytesWritten != null)
-            {
-                BytesWritten(this, e);
-            }
+            BytesWritten?.Invoke(this, e);
         }
     }
 
@@ -268,13 +256,7 @@ namespace SevenZip
         /// <summary>
         /// Gets the total length of input data.
         /// </summary>
-        public long Length
-        {
-            get
-            {
-                return StreamLength;
-            }
-        }
+        public long Length => StreamLength;
 
         #region IDisposable Members
 
@@ -519,10 +501,7 @@ namespace SevenZip
 
         private void OnBytesWritten(IntEventArgs e)
         {
-            if (BytesWritten != null)
-            {
-                BytesWritten(this, e);
-            }
+            BytesWritten?.Invoke(this, e);
         }
     }
 #endif

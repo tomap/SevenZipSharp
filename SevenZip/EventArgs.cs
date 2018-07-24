@@ -39,13 +39,7 @@
         /// <summary>
         /// Gets the percent of finished work.
         /// </summary>
-        public byte PercentDone
-        {
-            get
-            {
-                return _percentDone;
-            }
-        }        
+        public byte PercentDone => _percentDone;
 
         /// <summary>
         /// Converts a [0, 1] rate to its percent equivalent.
@@ -84,13 +78,7 @@
         /// <summary>
         /// Gets the change in done work percentage.
         /// </summary>
-        public byte PercentDelta
-        {
-            get
-            {
-                return _delta;
-            }
-        }
+        public byte PercentDelta => _delta;
     }
 
 #if UNMANAGED
@@ -120,13 +108,7 @@
         /// <summary>
         /// Gets the corresponding FileInfo to the event.
         /// </summary>
-        public ArchiveFileInfo FileInfo
-        {
-            get
-            {
-                return _fileInfo;
-            }
-        }
+        public ArchiveFileInfo FileInfo => _fileInfo;
     }
 
     /// <summary>
@@ -150,13 +132,7 @@
         /// Gets the size of unpacked archive data
         /// </summary>
         [CLSCompliant(false)]
-        public ulong TotalSize
-        {
-            get
-            {
-                return _totalSize;
-            }
-        }
+        public ulong TotalSize => _totalSize;
     }
 
     /// <summary>
@@ -178,13 +154,7 @@
         /// <summary>
         /// Gets the value of the IntEventArgs class
         /// </summary>
-        public int Value
-        {
-            get
-            {
-                return _value;
-            }
-        }
+        public int Value => _value;
     }
 
     /// <summary>
@@ -213,13 +183,7 @@
         /// <summary>
         /// Gets the file name.
         /// </summary>
-        public string FileName
-        {
-            get
-            {
-                return _fileName;
-            }
-        }
+        public string FileName => _fileName;
     }
 
     /// <summary>
@@ -298,13 +262,7 @@
         /// Information about file in the archive.
         /// </summary>
         /// <value>Information about file in the archive.</value>
-        public ArchiveFileInfo ArchiveFileInfo
-        {
-            get
-            {
-                return _archiveFileInfo;
-            }
-        }
+        public ArchiveFileInfo ArchiveFileInfo => _archiveFileInfo;
 
         /// <summary>
         /// The reason for calling <see cref="ExtractFileCallback"/>.
@@ -355,16 +313,14 @@
         /// </remarks>
         public Stream ExtractToStream
         {
-            get
-            {
-                return _extractToStream;
-            }
+            get => _extractToStream;
             set
             {
                 if (_extractToStream != null && !_extractToStream.CanWrite)
                 {
                     throw new ExtractionFailedException("The specified stream is not writable!");
                 }
+
                 _extractToStream = value;
             }
         }

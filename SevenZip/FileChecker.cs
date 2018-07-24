@@ -168,7 +168,7 @@
                 actualSignature = BitConverter.ToString(signature);
                 #endregion
                 
-                foreach (var format in new InArchiveFormat[] 
+                foreach (var format in new[] 
                 {
                     InArchiveFormat.Zip, 
                     InArchiveFormat.SevenZip,

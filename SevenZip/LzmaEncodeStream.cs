@@ -83,24 +83,12 @@
         /// <summary>
         /// Gets a value indicating whether the current stream supports reading.
         /// </summary>
-        public override bool CanRead
-        {
-            get
-            {
-                return false;
-            }
-        }
+        public override bool CanRead => false;
 
         /// <summary>
         /// Gets a value indicating whether the current stream supports seeking.
         /// </summary>
-        public override bool CanSeek
-        {
-            get
-            {
-                return false;
-            }
-        }
+        public override bool CanSeek => false;
 
         /// <summary>
         /// Gets a value indicating whether the current stream supports writing.
@@ -122,10 +110,12 @@
             get
             {
                 DisposedCheck();
+
                 if (_output.CanSeek)
                 {
                     return _output.Length;
                 }
+
                 return _buffer.Position;
             }
         }
@@ -138,16 +128,15 @@
             get
             {
                 DisposedCheck();
+
                 if (_output.CanSeek)
                 {
                     return _output.Position;
                 }
+
                 return _buffer.Position;
             }
-            set
-            {
-                throw new NotSupportedException();
-            }
+            set => throw new NotSupportedException();
         }
 
         private void Init()

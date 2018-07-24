@@ -19,9 +19,9 @@
     /// </summary>
     [StructLayout(LayoutKind.Sequential)]
     internal struct PropArray
-    {        
-        uint _cElems;
-        IntPtr _pElems;
+    {
+        readonly uint _cElems;
+        readonly IntPtr _pElems;
     }
 
     /// <summary>
@@ -67,13 +67,13 @@
         /// <summary>
         /// FILETIME variant value.
         /// </summary>
-        [FieldOffset(8)] private FILETIME _fileTime;
+        [FieldOffset(8)] private readonly FILETIME _fileTime;
 
         /// <summary>
         /// The PropArray instance to fix the variant size on x64 bit systems.
         /// </summary>
         [FieldOffset(8)]
-        private PropArray _propArray;
+        private readonly PropArray _propArray;
 
         /// <summary>
         /// Gets or sets variant type.
@@ -323,7 +323,7 @@
         /// <returns>true if the specified System.Object is equal to the current PropVariant; otherwise, false.</returns>
         public override bool Equals(object obj)
         {
-            return (obj is PropVariant) ? Equals((PropVariant) obj) : false;
+            return (obj is PropVariant variant) && Equals(variant);
         }
 
         /// <summary>

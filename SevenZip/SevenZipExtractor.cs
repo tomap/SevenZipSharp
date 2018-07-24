@@ -267,15 +267,11 @@ namespace SevenZip
             get
             {
                 DisposedCheck();
-                return _packedSize.HasValue
+                return _packedSize ?? (_fileName != null
                            ?
-                               _packedSize.Value
+                           new FileInfo(_fileName).Length
                            :
-                               _fileName != null
-                                   ?
-                                       (new FileInfo(_fileName)).Length
-                                   :
-                                       -1;
+                           -1);
             }
         }
 
@@ -530,15 +526,14 @@ namespace SevenZip
                             var archProps = new List<ArchiveProperty>((int)numProps);
                             for (uint i = 0; i < numProps; i++)
                             {
-                                string propName;
-                                ItemPropId propId;
-                                ushort varType;
-                                _archive.GetArchivePropertyInfo(i, out propName, out propId, out varType);
+                                _archive.GetArchivePropertyInfo(i, out string propName, out var propId, out var varType);
                                 _archive.GetArchiveProperty(propId, ref data);
+
                                 if (propId == ItemPropId.Solid)
                                 {
                                     _isSolid = NativeMethods.SafeCast(data, true);
                                 }
+                                
                                 // TODO Add more archive properties
                                 if (PropIdToName.PropIdNames.ContainsKey(propId))
                                 {
@@ -550,16 +545,17 @@ namespace SevenZip
                                 }
                                 else
                                 {
-                                    Debug.WriteLine(
-                                        "An unknown archive property encountered (code " +
-                                        ((int)propId).ToString(CultureInfo.InvariantCulture) + ')');
+                                    Debug.WriteLine($"An unknown archive property encountered (code {((int)propId).ToString(CultureInfo.InvariantCulture)})");
                                 }
                             }
+
                             _archiveProperties = new ReadOnlyCollection<ArchiveProperty>(archProps);
+
                             if (!_isSolid.HasValue && _format == InArchiveFormat.Zip)
                             {
                                 _isSolid = false;
                             }
+
                             if (!_isSolid.HasValue)
                             {
                                 _isSolid = true;
@@ -576,11 +572,13 @@ namespace SevenZip
                         }
                     }
                 }
+
                 if (disposeStream)
                 {
                     _archive.Close();
                     _archiveStream = null;
                 }
+
                 _archiveFileInfoCollection = new ReadOnlyCollection<ArchiveFileInfo>(_archiveFileData);
             }
         }
@@ -1404,8 +1402,8 @@ namespace SevenZip
                 throw new ArgumentException("The specified streams are invalid.");
             }
             var decoder = new Decoder();
-            long outSize, inSize = (inLength.HasValue ? inLength.Value : inStream.Length) - inStream.Position;
-            decoder.SetDecoderProperties(GetLzmaProperties(inStream, out outSize));
+            var inSize = (inLength ?? inStream.Length) - inStream.Position;
+            decoder.SetDecoderProperties(GetLzmaProperties(inStream, out var outSize));
             decoder.Code(
                 inStream, outStream, inSize, outSize,
                 new LzmaProgressCallback(inSize, codeProgressEvent));
@@ -1422,10 +1420,10 @@ namespace SevenZip
             {
                 var decoder = new Decoder();
                 inStream.Seek(0, 0);
+
                 using (var outStream = new MemoryStream())
                 {
-                    long outSize;
-                    decoder.SetDecoderProperties(GetLzmaProperties(inStream, out outSize));
+                    decoder.SetDecoderProperties(GetLzmaProperties(inStream, out var outSize));
                     decoder.Code(inStream, outStream, inStream.Length - inStream.Position, outSize, null);
                     return outStream.ToArray();
                 }
