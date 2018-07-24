@@ -162,15 +162,8 @@
         {
             using (var extractor = new SevenZipExtractor(file.FilePath))
             {
-                try
-                {
-                    extractor.ExtractArchive(OutputDirectory);
-                    Assert.AreEqual(1, Directory.GetFiles(OutputDirectory).Length);
-                }
-                catch (SevenZipException)
-                {
-                    Assert.Warn("Legacy bug, needs to be investigated.");
-                }
+                extractor.ExtractArchive(OutputDirectory);
+                Assert.AreEqual(1, Directory.GetFiles(OutputDirectory).Length);
             }
         }
     }

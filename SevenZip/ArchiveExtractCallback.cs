@@ -227,9 +227,17 @@ namespace SevenZip
 
         private void IntEventArgsHandler(object sender, IntEventArgs e)
         {
+            // If _bytesCount is not set, we can't update the progress.
+            if (_bytesCount == 0)
+            {
+                return;
+            }
+
+
             var pold = (int)((_bytesWrittenOld * 100) / _bytesCount);
             _bytesWritten += e.Value;
             var pnow = (int)((_bytesWritten * 100) / _bytesCount);
+
             if (pnow > pold)
             {
                 if (pnow > 100)

@@ -42,7 +42,7 @@
     <Optimize>false</Optimize>
     <OutputPath>..\Stage\$(Configuration)\</OutputPath>
     <IntermediateOutputPath>..\Stage\obj\$(Configuration)\</IntermediateOutputPath>
-    <DefineConstants>TRACE;DEBUG;UNMANAGED, COMPRESS, LZMA_STREAM, DOTNET20</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;UNMANAGED, COMPRESS, LZMA_STREAM, DOTNET20; SFX</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <RegisterForComInterop>false</RegisterForComInterop>
