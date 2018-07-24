@@ -227,14 +227,16 @@ namespace SevenZip
 
         private void IntEventArgsHandler(object sender, IntEventArgs e)
         {
-            if (_bytesCount == 0)
-            {
-                AddException(new InvalidOperationException("Internal bug: _bytesCount is zero, resulting in division by zero."));
-            }
+            var pold = 0;
+            var pnow = 0;
 
-            var pold = (int)((_bytesWrittenOld * 100) / _bytesCount);
-            _bytesWritten += e.Value;
-            var pnow = (int)((_bytesWritten * 100) / _bytesCount);
+            if (_bytesCount != 0)
+            {
+                pold = (int)((_bytesWrittenOld * 100) / _bytesCount);
+                _bytesWritten += e.Value;
+                pnow = (int)((_bytesWritten * 100) / _bytesCount);
+            }
+            
             if (pnow > pold)
             {
                 if (pnow > 100)
@@ -256,6 +258,11 @@ namespace SevenZip
         /// <param name="total">Size of the unpacked archive files (in bytes)</param>
         public void SetTotal(ulong total)
         {
+            if (total == 0)
+            {
+                throw new ArgumentException("Total byte count cannot be zero.", nameof(total));
+            }
+
             _bytesCount = (long)total;
             OnOpen(new OpenEventArgs(total));
         }
