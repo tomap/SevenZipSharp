@@ -4,9 +4,8 @@ namespace SevenZip
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
     using System.Globalization;
-#if !WINCE
     using System.Runtime.Remoting.Messaging;
-#endif
+
 #if DOTNET20
     using System.Threading;
 #else
@@ -43,7 +42,6 @@ namespace SevenZip
         private readonly bool _reportErrors;
         private readonly int _uniqueID;
         private static readonly List<int> Identificators = new List<int>();
-#if !WINCE
         internal static readonly AsyncCallback AsyncCallbackImplementation = AsyncCallbackMethod;
 
         /// <summary>
@@ -172,19 +170,7 @@ Dispatcher == null
         /// Gets or sets the event synchronization strategy.
         /// </summary>
         public EventSynchronizationStrategy EventSynchronization { get; set; }
-#else // WINCE
-        internal void OnEvent<T>(EventHandler<T> handler, T e, bool synchronous) where T : System.EventArgs
-        {
-            try
-            {
-                handler(this, e);
-            }
-            catch (Exception ex)
-            {
-                AddException(ex);
-            }
-        }
-#endif
+
         /// <summary>
         /// Gets the unique identificator of this SevenZipBase instance.
         /// </summary>

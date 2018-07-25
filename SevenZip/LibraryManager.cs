@@ -5,9 +5,6 @@ namespace SevenZip
     using System.Configuration;
     using System.Diagnostics;
     using System.Security.Permissions;
-#if WINCE
-    using OpenNETCF.Diagnostics;
-#endif
     using System.IO;
     using System.Reflection;
     using System.Runtime.InteropServices;
@@ -46,10 +43,6 @@ namespace SevenZip
             return Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), Environment.Is64BitProcess ? "7z64.dll" : "7z.dll");
         }
 
-#if WINCE 		
-        private static string _libraryFileName =
-            Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().GetName().CodeBase), "7z.dll");
-#endif
         /// <summary>
         /// 7-zip library handle.
         /// </summary>

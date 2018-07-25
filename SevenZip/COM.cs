@@ -6,11 +6,7 @@
     using System.IO;
     using System.Runtime.InteropServices;
     using System.Security.Permissions;
-#if !WINCE
     using FILETIME = System.Runtime.InteropServices.ComTypes.FILETIME;
-#elif WINCE
-    using FILETIME=OpenNETCF.Runtime.InteropServices.ComTypes.FILETIME;
-#endif
 
 #if UNMANAGED
 
@@ -267,10 +263,9 @@
         {
             get
             {
-#if !WINCE
                 var sp = new SecurityPermission(SecurityPermissionFlag.UnmanagedCode);
                 sp.Demand();
-#endif
+
                 switch (VarType)
                 {
                     case VarEnum.VT_EMPTY:
@@ -290,7 +285,6 @@
                         {
                             return Marshal.GetObjectForNativeVariant(propHandle.AddrOfPinnedObject());
                         }
-#if WINCE
                         catch (NotSupportedException)
                         {
                             switch (VarType)
@@ -307,7 +301,6 @@
                                     return 0;
                             }
                         }
-#endif
                         finally
                         {
                             propHandle.Free();

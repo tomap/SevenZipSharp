@@ -134,11 +134,7 @@
 
         private static string GetResourceString(string str)
         {
-#if !WINCE
             return "SevenZip.sfx." + str;
-#else
-            return "SevenZipSharpMobile.sfx." + str;
-#endif
         }
 
         /// <summary>

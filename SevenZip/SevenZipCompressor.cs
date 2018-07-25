@@ -10,9 +10,7 @@ namespace SevenZip
     using System.Linq;
 #endif
     using System.Runtime.InteropServices;
-#if !WINCE
     using System.Security.Permissions;
-#endif
     using SevenZip.Sdk;
     using SevenZip.Sdk.Compression.Lzma;
 
@@ -113,12 +111,8 @@ namespace SevenZip
         {
             try
             {
-#if !WINCE
                 TempFolderPath = Path.GetTempPath();
                 //TempFolderPath = Environment.GetEnvironmentVariable("TEMP", EnvironmentVariableTarget.User);
-#else
-                TempFolderPath = "Temp";
-#endif
             }
             catch (System.Security.SecurityException) // Registry access is not allowed, etc.
             {
@@ -262,10 +256,9 @@ namespace SevenZip
                     }
                     var names = new List<IntPtr>(2 + CustomParameters.Count);
                     var values = new List<PropVariant>(2 + CustomParameters.Count);
-#if !WINCE
                     var sp = new SecurityPermission(SecurityPermissionFlag.UnmanagedCode);
                     sp.Demand();
-#endif
+
                     #region Initialize compression properties
 
                     if (_compressionMethod == CompressionMethod.Default)
@@ -372,13 +365,9 @@ namespace SevenZip
                         var tmp = new PropVariant
                         {
                             VarType = VarEnum.VT_BSTR,
-                            Value = Marshal.StringToBSTR(
-#if !WINCE
-Enum.GetName(typeof(ZipEncryptionMethod), ZipEncryptionMethod))
-#else
-                            OpenNETCF.Enum2.GetName(typeof (ZipEncryptionMethod), ZipEncryptionMethod))
-#endif
+                            Value = Marshal.StringToBSTR(Enum.GetName(typeof(ZipEncryptionMethod), ZipEncryptionMethod))
                         };
+
                         values.Add(tmp);
                     }
 
@@ -386,6 +375,7 @@ Enum.GetName(typeof(ZipEncryptionMethod), ZipEncryptionMethod))
 
                     var namesHandle = GCHandle.Alloc(names.ToArray(), GCHandleType.Pinned);
                     var valuesHandle = GCHandle.Alloc(values.ToArray(), GCHandleType.Pinned);
+
                     try
                     {
                         if (setter != null) //ReSharper

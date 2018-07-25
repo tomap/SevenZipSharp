@@ -1,9 +1,7 @@
 ﻿namespace SevenZip
 {
     using System;
-#if !WINCE
     using System.Runtime.Serialization;
-#endif
 
     /// <summary>
     /// Base SevenZip exception class.
@@ -55,7 +53,6 @@
         /// <param name="inner">Inner exception occured</param>
         public SevenZipException(string defaultMessage, Exception inner)
             : base(defaultMessage, inner) {}
-#if !WINCE
         /// <summary>
         /// Initializes a new instance of the SevenZipException class
         /// </summary>
@@ -64,7 +61,6 @@
         protected SevenZipException(
             SerializationInfo info, StreamingContext context)
             : base(info, context) {}
-#endif
     }
 
 #if UNMANAGED
@@ -97,7 +93,7 @@
         /// <param name="message">Additional detailed message</param>
         /// <param name="inner">Inner exception occured</param>
         public ExtractionFailedException(string message, Exception inner) : base(DEFAULT_MESSAGE, message, inner) {}
-#if !WINCE
+
         /// <summary>
         /// Initializes a new instance of the ExtractionFailedException class
         /// </summary>
@@ -106,7 +102,6 @@
         protected ExtractionFailedException(
             SerializationInfo info, StreamingContext context)
             : base(info, context) {}
-#endif
     }
 
 #if COMPRESS
@@ -139,7 +134,7 @@
         /// <param name="message">Additional detailed message</param>
         /// <param name="inner">Inner exception occured</param>
         public CompressionFailedException(string message, Exception inner) : base(DEFAULT_MESSAGE, message, inner) {}
-#if !WINCE
+
         /// <summary>
         /// Initializes a new instance of the CompressionFailedException class
         /// </summary>
@@ -148,7 +143,7 @@
         protected CompressionFailedException(
             SerializationInfo info, StreamingContext context)
             : base(info, context) {}
-#endif
+
     }
 #endif
 #endif
@@ -181,7 +176,7 @@
         /// <param name="message">Additional detailed message</param>
         /// <param name="inner">Inner exception occured</param>
         public LzmaException(string message, Exception inner) : base(DEFAULT_MESSAGE, message, inner) {}
-#if !WINCE
+
         /// <summary>
         /// Initializes a new instance of the LzmaException class
         /// </summary>
@@ -190,7 +185,6 @@
         protected LzmaException(
             SerializationInfo info, StreamingContext context)
             : base(info, context) {}
-#endif
     }
 
 #if UNMANAGED
@@ -226,7 +220,7 @@
         /// <param name="message">Additional detailed message</param>
         /// <param name="inner">Inner exception occured</param>
         public SevenZipArchiveException(string message, Exception inner) : base(DEFAULT_MESSAGE, message, inner) {}
-#if !WINCE
+
         /// <summary>
         /// Initializes a new instance of the SevenZipArchiveException class
         /// </summary>
@@ -235,7 +229,6 @@
         protected SevenZipArchiveException(
             SerializationInfo info, StreamingContext context)
             : base(info, context) {}
-#endif
     }
     
     /// <summary>
@@ -266,7 +259,7 @@
         /// <param name="message">Additional detailed message</param>
         /// <param name="inner">Inner exception occured</param>
         public SevenZipInvalidFileNamesException(string message, Exception inner) : base(DEFAULT_MESSAGE, message, inner) {}
-#if !WINCE
+
         /// <summary>
         /// Initializes a new instance of the SevenZipInvalidFileNamesException class
         /// </summary>
@@ -275,7 +268,6 @@
         protected SevenZipInvalidFileNamesException(
             SerializationInfo info, StreamingContext context)
             : base(info, context) {}
-#endif
     }
 
 #if COMPRESS
@@ -309,7 +301,7 @@
         /// <param name="inner">Inner exception occured</param>
         public SevenZipCompressionFailedException(string message, Exception inner)
             : base(DEFAULT_MESSAGE, message, inner) {}
-#if !WINCE
+
         /// <summary>
         /// Initializes a new instance of the SevenZipCompressionFailedException class
         /// </summary>
@@ -318,7 +310,6 @@
         protected SevenZipCompressionFailedException(
             SerializationInfo info, StreamingContext context)
             : base(info, context) {}
-#endif
     }
 #endif
     
@@ -350,7 +341,7 @@
         /// <param name="message">Additional detailed message</param>
         /// <param name="inner">Inner exception occured</param>
         public SevenZipExtractionFailedException(string message, Exception inner) : base(DEFAULT_MESSAGE, message, inner) {}
-#if !WINCE
+
         /// <summary>
         /// Initializes a new instance of the SevenZipExtractionFailedException class
         /// </summary>
@@ -359,7 +350,6 @@
         protected SevenZipExtractionFailedException(
             SerializationInfo info, StreamingContext context)
             : base(info, context) {}
-#endif
     }
     
     /// <summary>
@@ -390,7 +380,7 @@
         /// <param name="message">Additional detailed message</param>
         /// <param name="inner">Inner exception occured</param>
         public SevenZipLibraryException(string message, Exception inner) : base(DEFAULT_MESSAGE, message, inner) {}
-#if !WINCE
+
         /// <summary>
         /// Initializes a new instance of the SevenZipLibraryException class
         /// </summary>
@@ -399,7 +389,6 @@
         protected SevenZipLibraryException(
             SerializationInfo info, StreamingContext context)
             : base(info, context) {}
-#endif
     }
 #endif
 
@@ -433,7 +422,7 @@
         /// <param name="message">Additional detailed message</param>
         /// <param name="inner">Inner exception occured</param>
         public SevenZipSfxValidationException(string message, Exception inner) : base(DefaultMessage, message, inner) {}
-#if !WINCE
+
         /// <summary>
         /// Initializes a new instance of the SevenZipSfxValidationException class
         /// </summary>
@@ -442,7 +431,6 @@
         protected SevenZipSfxValidationException(
             SerializationInfo info, StreamingContext context)
             : base(info, context) {}
-#endif
     }
 #endif
 }

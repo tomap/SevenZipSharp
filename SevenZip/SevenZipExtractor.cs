@@ -351,9 +351,8 @@ namespace SevenZip
             {
                 throw new ObjectDisposedException("SevenZipExtractor");
             }
-#if !WINCE
+
             RecreateInstanceIfNeeded();
-#endif
         }
 
         #region Core private functions
