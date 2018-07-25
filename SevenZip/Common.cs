@@ -12,9 +12,6 @@ namespace SevenZip
 #else
     using System.Windows.Threading;
 #endif
-#if MONO
-    using SevenZip.Mono.COM;
-#endif
 
 #if UNMANAGED
 
@@ -336,7 +333,6 @@ Dispatcher == null
             }
         }
 
-#if !WINCE && !MONO
         /// <summary>
         /// Changes the path to the 7-zip native library.
         /// </summary>
@@ -345,7 +341,7 @@ Dispatcher == null
         {
             SevenZipLibraryManager.SetLibraryPath(libraryPath);
         }
-#endif
+
         /// <summary>
         /// Gets the current library features.
         /// </summary>

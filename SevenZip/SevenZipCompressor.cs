@@ -15,9 +15,6 @@ namespace SevenZip
 #endif
     using SevenZip.Sdk;
     using SevenZip.Sdk.Compression.Lzma;
-#if MONO
-    using SevenZip.Mono.COM;
-#endif
 
 #if COMPRESS
     /// <summary>

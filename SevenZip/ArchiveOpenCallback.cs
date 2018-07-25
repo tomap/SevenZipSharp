@@ -4,10 +4,6 @@ namespace SevenZip
     using System.Collections.Generic;
     using System.IO;
     using System.Runtime.InteropServices;
-#if MONO
-    using SevenZip.Mono;
-    using SevenZip.Mono.COM;
-#endif
 
 #if UNMANAGED
     /// <summary>
@@ -183,9 +179,7 @@ namespace SevenZip
                 }
                 _wrappers = null;
             }
-#if MONO
-			libp7zInvokerRaw.FreeObject(Handle);	
-#endif
+
             GC.SuppressFinalize(this);
         }
 

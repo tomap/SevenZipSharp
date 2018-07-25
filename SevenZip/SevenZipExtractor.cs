@@ -12,9 +12,6 @@ namespace SevenZip
     using System.Linq;
 #endif
     using SevenZip.Sdk.Compression.Lzma;
-#if MONO
-    using SevenZip.Mono.COM;
-#endif
 
     /// <summary>
     /// Class to unpack data from archives supported by 7-Zip.

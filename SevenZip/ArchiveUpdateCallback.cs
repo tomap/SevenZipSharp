@@ -4,9 +4,6 @@ namespace SevenZip
     using System.Collections.Generic;
     using System.IO;
     using System.Runtime.InteropServices;
-#if MONO
-    using SevenZip.Mono.COM;
-#endif
 
 #if UNMANAGED
 #if COMPRESS
@@ -618,18 +615,14 @@ namespace SevenZip
         /// <param name="index">File index</param>
         /// <param name="inStream">Input file stream</param>
         /// <returns>Zero if Ok</returns>
-        public int GetStream(uint index, out 
-#if !MONO
-		                     ISequentialInStream
-#else
-		                     HandleRef
-#endif
-		                     inStream)
+        public int GetStream(uint index, out ISequentialInStream inStream)
         {
             index -= _indexOffset;
+
             if (_files != null)
             {
                 _fileStream = null;
+
                 try
                 {
                     if (File.Exists(_files[index].FullName))
@@ -645,7 +638,9 @@ namespace SevenZip
                     inStream = null;
                     return -1;
                 }
+
                 inStream = _fileStream;
+
                 if (!EventsForGetStream(index))
                 {
                     return -1;
@@ -667,6 +662,7 @@ namespace SevenZip
                     }
                 }
             }
+
             return 0;
         }
 

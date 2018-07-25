@@ -2,14 +2,10 @@ namespace SevenZip
 {
     using System;
     using System.Runtime.InteropServices;
-#if MONO
-    using SevenZip.Mono.COM;
-#endif
 
 #if UNMANAGED
     internal static class NativeMethods
     {
-        #if !WINCE && !MONO
         #region Delegates
 
         [UnmanagedFunctionPointer(CallingConvention.StdCall)]
@@ -29,7 +25,6 @@ namespace SevenZip
 
         [DllImport("kernel32.dll", BestFitMapping = false, ThrowOnUnmappableChar = true)]
         public static extern IntPtr GetProcAddress(IntPtr hModule, [MarshalAs(UnmanagedType.LPStr)] string procName);
-		#endif
 		
 		#if WINCE
         [DllImport("7z.dll", EntryPoint="CreateObject")]
