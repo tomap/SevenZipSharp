@@ -1,5 +1,3 @@
-using System.Linq;
-
 namespace SevenZip
 {
     using System;
@@ -8,11 +6,8 @@ namespace SevenZip
     using System.Diagnostics;
     using System.Globalization;
     using System.IO;
-#if DOTNET20
-    using System.Threading;
-#else
     using System.Linq;
-#endif
+
     using SevenZip.Sdk.Compression.Lzma;
 
     /// <summary>

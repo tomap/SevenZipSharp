@@ -5,12 +5,7 @@ namespace SevenZip
     using System.Collections.ObjectModel;
     using System.Globalization;
     using System.Runtime.Remoting.Messaging;
-
-#if DOTNET20
     using System.Threading;
-#else
-    using System.Windows.Threading;
-#endif
 
 #if UNMANAGED
 
@@ -60,28 +55,15 @@ namespace SevenZip
             ((SevenZipBase)ar.AsyncState).ReleaseContext();
         }
 
-        internal virtual void SaveContext(
-#if !DOTNET20
-DispatcherPriority priority = DispatcherPriority.Normal
-#endif
-)
+        internal virtual void SaveContext()
         {
-#if !DOTNET20
-            Dispatcher = Dispatcher.CurrentDispatcher;
-            Priority = priority;
-#else
             Context = SynchronizationContext.Current;
-#endif
             NeedsToBeRecreated = true;
         }
 
         internal virtual void ReleaseContext()
         {
-#if !DOTNET20
-            Dispatcher = null;
-#else
             Context = null;
-#endif
             NeedsToBeRecreated = true;
             GC.SuppressFinalize(this);
         }
@@ -103,46 +85,29 @@ DispatcherPriority priority = DispatcherPriority.Normal
                             synchronous = true;
                             break;
                     }
-                    if (
-#if !DOTNET20
-Dispatcher == null
-#else
-                        Context == null
-#endif
-)
+
+                    if (Context == null)
                     {
                         // Usual synchronous call
                         handler(this, e);
                     }
                     else
                     {
-#if !DOTNET20
-                        var eventHandlerDelegate = new EventHandlerDelegate<T>((h, ee) => h(this, ee));
+                        var callback = new SendOrPostCallback(obj =>
+                        {
+                            var array = (object[])obj;
+                            ((EventHandler<T>)array[0])(array[1], (T)array[2]);
+                        });
+
                         if (synchronous)
                         {
                             // Could be just handler(this, e);
-                            Dispatcher.Invoke(eventHandlerDelegate, Priority, handler, e);
+                            Context.Send(callback, new object[] { handler, this, e });
                         }
                         else
                         {
-                            Dispatcher.BeginInvoke(eventHandlerDelegate, Priority, handler, e);
+                            Context.Post(callback, new object[] { handler, this, e });
                         }
-#else
-                    var callback = new SendOrPostCallback((obj) =>
-                    {
-                        var array = (object[])obj;
-                        ((EventHandler<T>)array[0])(array[1], (T)array[2]);
-                    });
-                    if (synchronous)
-                    {
-                        // Could be just handler(this, e);
-                        Context.Send(callback, new object[] { handler, this, e });
-                    }
-                    else
-                    {
-                        Context.Post(callback, new object[] { handler, this, e });
-                    }
-#endif
                     }
                 }
             }
@@ -152,20 +117,7 @@ Dispatcher == null
             }
         }
 
-#if !DOTNET20
-        /// <summary>
-        /// Gets or sets the Dispatcher object for this instance.
-        /// It will be used to fire events in the user context.
-        /// </summary>
-        internal Dispatcher Dispatcher { get; set; }
-
-        /// <summary>
-        /// Gets or sets the Dispatcher priority of calling user events.
-        /// </summary>
-        internal DispatcherPriority Priority { get; set; }
-#else
         internal SynchronizationContext Context { get; set; }
-#endif
         /// <summary>
         /// Gets or sets the event synchronization strategy.
         /// </summary>

@@ -2,11 +2,7 @@
 {
     using System.Collections.Generic;
     using System.IO;
-#if DOTNET20
     using System.Threading;
-#else
-    using System.Windows.Threading;
-#endif
 
     partial class SevenZipCompressor
     {
@@ -39,104 +35,45 @@
         #endregion
 
         #region CompressFiles overloads
-#if !DOTNET20
         /// <summary>
         /// Packs files into the archive asynchronously.
         /// </summary>
         /// <param name="fileFullNames">Array of file names to pack.</param>
         /// <param name="archiveName">The archive file name.</param>
-        /// <param name="eventPriority">The priority of events, relative to the other pending operations in the System.Windows.Threading.Dispatcher event queue, the specified method is invoked.</param>
-#else
-        /// <summary>
-        /// Packs files into the archive asynchronously.
-        /// </summary>
-        /// <param name="fileFullNames">Array of file names to pack.</param>
-        /// <param name="archiveName">The archive file name.</param>
-#endif
-        public void BeginCompressFiles(
-            string archiveName
-#if !DOTNET20
-            , DispatcherPriority eventPriority
-#endif                        
-            , params string[] fileFullNames
-        )
+        public void BeginCompressFiles(string archiveName, params string[] fileFullNames)
         {
-            SaveContext(
-#if !DOTNET20
-                eventPriority
-#endif
-            );
-            (new CompressFiles1Delegate(CompressFiles)).BeginInvoke(archiveName, fileFullNames,
+            SaveContext();
+            new CompressFiles1Delegate(CompressFiles).BeginInvoke(archiveName, fileFullNames,
                 AsyncCallbackImplementation, this);
         }
 
-#if !DOTNET20
         /// <summary>
         /// Packs files into the archive asynchronously.
         /// </summary>
         /// <param name="fileFullNames">Array of file names to pack.</param>
         /// <param name="archiveStream">The archive output stream. 
         /// Use CompressFiles(string archiveName ... ) overloads for archiving to disk.</param>
-        /// <param name="eventPriority">The priority of events, relative to the other pending operations in the System.Windows.Threading.Dispatcher event queue, the specified method is invoked.</param>
-#else
-        /// <summary>
-        /// Packs files into the archive asynchronously.
-        /// </summary>
-        /// <param name="fileFullNames">Array of file names to pack.</param>
-        /// <param name="archiveStream">The archive output stream. 
-        /// Use CompressFiles(string archiveName ... ) overloads for archiving to disk.</param>
-#endif
-        public void BeginCompressFiles(
-            Stream archiveStream
-#if !DOTNET20
-            , DispatcherPriority eventPriority
-#endif            
-            , params string[] fileFullNames          
-        )
+        public void BeginCompressFiles(Stream archiveStream, params string[] fileFullNames)
         {
-            SaveContext(
-#if !DOTNET20
-                eventPriority
-#endif
-            );
-            (new CompressFiles2Delegate(CompressFiles)).BeginInvoke(archiveStream, fileFullNames,
+            SaveContext();
+            new CompressFiles2Delegate(CompressFiles).BeginInvoke(archiveStream, fileFullNames,
                 AsyncCallbackImplementation, this);
         }
-
-#if !DOTNET20
+        
         /// <summary>
         /// Packs files into the archive asynchronously.
         /// </summary>
         /// <param name="fileFullNames">Array of file names to pack.</param>
         /// <param name="commonRootLength">The length of the common root of the file names.</param>
         /// <param name="archiveName">The archive file name.</param>
-        /// <param name="eventPriority">The priority of events, relative to the other pending operations in the System.Windows.Threading.Dispatcher event queue, the specified method is invoked.</param>
-#else
-        /// <summary>
-        /// Packs files into the archive asynchronously.
-        /// </summary>
-        /// <param name="fileFullNames">Array of file names to pack.</param>
-        /// <param name="commonRootLength">The length of the common root of the file names.</param>
-        /// <param name="archiveName">The archive file name.</param>
-#endif
         public void BeginCompressFiles(
-            string archiveName, int commonRootLength
-#if !DOTNET20
-            , DispatcherPriority eventPriority
-#endif             
-            , params string[] fileFullNames           
-        )
+            string archiveName, int commonRootLength, params string[] fileFullNames)
         {
-            SaveContext(
-#if !DOTNET20
-                eventPriority
-#endif
-            );
-            (new CompressFiles3Delegate(CompressFiles)).BeginInvoke(archiveName, commonRootLength, fileFullNames,
+            SaveContext();
+            new CompressFiles3Delegate(CompressFiles).BeginInvoke(archiveName, commonRootLength, fileFullNames,
                 AsyncCallbackImplementation, this);
         }
 
-#if !DOTNET20
         /// <summary>
         /// Packs files into the archive asynchronously.
         /// </summary>
@@ -144,67 +81,26 @@
         /// <param name="commonRootLength">The length of the common root of the file names.</param>
         /// <param name="archiveStream">The archive output stream.
         /// Use CompressFiles(string archiveName, ... ) overloads for archiving to disk.</param>
-        /// <param name="eventPriority">The priority of events, relative to the other pending operations in the System.Windows.Threading.Dispatcher event queue, the specified method is invoked.</param>
-#else
-        /// <summary>
-        /// Packs files into the archive asynchronously.
-        /// </summary>
-        /// <param name="fileFullNames">Array of file names to pack.</param>
-        /// <param name="commonRootLength">The length of the common root of the file names.</param>
-        /// <param name="archiveStream">The archive output stream.
-        /// Use CompressFiles(string archiveName, ... ) overloads for archiving to disk.</param>
-#endif
-        public void BeginCompressFiles(
-            Stream archiveStream, int commonRootLength
-#if !DOTNET20
-            , DispatcherPriority eventPriority
-#endif              
-            , params string[] fileFullNames          
-        )
+        public void BeginCompressFiles(Stream archiveStream, int commonRootLength, params string[] fileFullNames)
         {
-            SaveContext(
-#if !DOTNET20
-                eventPriority
-#endif
-            );
-            (new CompressFiles4Delegate(CompressFiles)).BeginInvoke(archiveStream, commonRootLength, fileFullNames,
+            SaveContext();
+            new CompressFiles4Delegate(CompressFiles).BeginInvoke(archiveStream, commonRootLength, fileFullNames,
                 AsyncCallbackImplementation, this);
         }
 
-#if !DOTNET20
         /// <summary>
         /// Packs files into the archive asynchronously.
         /// </summary>
         /// <param name="fileFullNames">Array of file names to pack.</param>
         /// <param name="archiveName">The archive file name</param>
         /// <param name="password">The archive password.</param>
-        /// <param name="eventPriority">The priority of events, relative to the other pending operations in the System.Windows.Threading.Dispatcher event queue, the specified method is invoked.</param>
-#else
-        /// <summary>
-        /// Packs files into the archive asynchronously.
-        /// </summary>
-        /// <param name="fileFullNames">Array of file names to pack.</param>
-        /// <param name="archiveName">The archive file name</param>
-        /// <param name="password">The archive password.</param>
-#endif
-        public void BeginCompressFilesEncrypted(
-            string archiveName, string password
-#if !DOTNET20
-            , DispatcherPriority eventPriority
-#endif            
-            , params string[] fileFullNames        
-        )
+        public void BeginCompressFilesEncrypted(string archiveName, string password, params string[] fileFullNames  )
         {
-            SaveContext(
-#if !DOTNET20
-                eventPriority
-#endif
-            );
-            (new CompressFilesEncrypted1Delegate(CompressFilesEncrypted)).BeginInvoke(archiveName, password, fileFullNames,
+            SaveContext();
+            new CompressFilesEncrypted1Delegate(CompressFilesEncrypted).BeginInvoke(archiveName, password, fileFullNames,
                 AsyncCallbackImplementation, this);
         }
 
-#if !DOTNET20
         /// <summary>
         /// Packs files into the archive asynchronously.
         /// </summary>
@@ -212,34 +108,13 @@
         /// <param name="archiveStream">The archive output stream.
         /// Use CompressFiles( ... string archiveName ... ) overloads for archiving to disk.</param>
         /// <param name="password">The archive password.</param>
-        /// <param name="eventPriority">The priority of events, relative to the other pending operations in the System.Windows.Threading.Dispatcher event queue, the specified method is invoked.</param>
-#else
-        /// <summary>
-        /// Packs files into the archive asynchronously.
-        /// </summary>
-        /// <param name="fileFullNames">Array of file names to pack.</param>
-        /// <param name="archiveStream">The archive output stream.
-        /// Use CompressFiles( ... string archiveName ... ) overloads for archiving to disk.</param>
-        /// <param name="password">The archive password.</param>
-#endif
-        public void BeginCompressFilesEncrypted(
-            Stream archiveStream, string password
-#if !DOTNET20
-            , DispatcherPriority eventPriority
-#endif              
-            , params string[] fileFullNames          
-        )
+        public void BeginCompressFilesEncrypted(Stream archiveStream, string password, params string[] fileFullNames)
         {
-            SaveContext(
-#if !DOTNET20
-                eventPriority
-#endif
-            );
-            (new CompressFilesEncrypted2Delegate(CompressFilesEncrypted)).BeginInvoke(archiveStream, password, fileFullNames,
+            SaveContext();
+            new CompressFilesEncrypted2Delegate(CompressFilesEncrypted).BeginInvoke(archiveStream, password, fileFullNames,
                 AsyncCallbackImplementation, this);
         }
 
-#if !DOTNET20
         /// <summary>
         /// Packs files into the archive asynchronously.
         /// </summary>
@@ -247,34 +122,13 @@
         /// <param name="archiveName">The archive file name</param>
         /// <param name="password">The archive password.</param>
         /// <param name="commonRootLength">The length of the common root of the file names.</param>
-        /// <param name="eventPriority">The priority of events, relative to the other pending operations in the System.Windows.Threading.Dispatcher event queue, the specified method is invoked.</param>
-#else
-        /// <summary>
-        /// Packs files into the archive asynchronously.
-        /// </summary>
-        /// <param name="fileFullNames">Array of file names to pack.</param>
-        /// <param name="archiveName">The archive file name</param>
-        /// <param name="password">The archive password.</param>
-        /// <param name="commonRootLength">The length of the common root of the file names.</param>
-#endif
-        public void BeginCompressFilesEncrypted(
-            string archiveName, int commonRootLength, string password
-#if !DOTNET20
-            , DispatcherPriority eventPriority
-#endif            
-            , params string[] fileFullNames         
-        )
+        public void BeginCompressFilesEncrypted(string archiveName, int commonRootLength, string password, params string[] fileFullNames)
         {
-            SaveContext(
-#if !DOTNET20
-                eventPriority
-#endif
-            );
-            (new CompressFilesEncrypted3Delegate(CompressFilesEncrypted)).BeginInvoke(archiveName, commonRootLength, password,
+            SaveContext();
+            new CompressFilesEncrypted3Delegate(CompressFilesEncrypted).BeginInvoke(archiveName, commonRootLength, password,
                 fileFullNames, AsyncCallbackImplementation, this);
         }
 
-#if !DOTNET20
         /// <summary>
         /// Packs files into the archive asynchronously.
         /// </summary>
@@ -283,31 +137,10 @@
         /// Use CompressFiles( ... string archiveName ... ) overloads for archiving to disk.</param>
         /// <param name="password">The archive password.</param>
         /// <param name="commonRootLength">The length of the common root of the file names.</param>
-        /// <param name="eventPriority">The priority of events, relative to the other pending operations in the System.Windows.Threading.Dispatcher event queue, the specified method is invoked.</param>
-#else
-        /// <summary>
-        /// Packs files into the archive asynchronously.
-        /// </summary>
-        /// <param name="fileFullNames">Array of file names to pack.</param>
-        /// <param name="archiveStream">The archive output stream.
-        /// Use CompressFiles( ... string archiveName ... ) overloads for archiving to disk.</param>
-        /// <param name="password">The archive password.</param>
-        /// <param name="commonRootLength">The length of the common root of the file names.</param>
-#endif
-        public void BeginCompressFilesEncrypted(
-            Stream archiveStream, int commonRootLength, string password
-#if !DOTNET20
-, DispatcherPriority eventPriority
-#endif             
-            , params string[] fileFullNames           
-        )
+        public void BeginCompressFilesEncrypted(Stream archiveStream, int commonRootLength, string password, params string[] fileFullNames)
         {
-            SaveContext(
-#if !DOTNET20
-                eventPriority
-#endif
-            );
-            (new CompressFilesEncrypted4Delegate(CompressFilesEncrypted)).BeginInvoke(archiveStream, commonRootLength, password,
+            SaveContext();
+            new CompressFilesEncrypted4Delegate(CompressFilesEncrypted).BeginInvoke(archiveStream, commonRootLength, password,
                 fileFullNames, AsyncCallbackImplementation, this);
         }
         #endregion

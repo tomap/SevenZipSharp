@@ -2,11 +2,6 @@
 {
     using System;
     using System.IO;
-#if DOTNET20
-    using System.Threading;
-#else
-    using System.Windows.Threading;
-#endif
 
     partial class SevenZipExtractor
     {
@@ -100,18 +95,10 @@
         private delegate void ExtractFiles3Delegate(ExtractFileCallback extractFileCallback);
         #endregion
 
-#if !DOTNET20
         /// <summary>
         /// Unpacks the whole archive asynchronously to the specified directory name at the specified priority.
         /// </summary>
         /// <param name="directory">The directory where the files are to be unpacked.</param>
-        /// <param name="eventPriority">The priority of events, relative to the other pending operations in the System.Windows.Threading.Dispatcher event queue, the specified method is invoked.</param>
-#else
-        /// <summary>
-        /// Unpacks the whole archive asynchronously to the specified directory name at the specified priority.
-        /// </summary>
-        /// <param name="directory">The directory where the files are to be unpacked.</param>
-#endif
         public void BeginExtractArchive(string directory)
         {
             SaveContext();
