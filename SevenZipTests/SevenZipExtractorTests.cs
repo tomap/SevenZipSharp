@@ -94,10 +94,11 @@
         [Test]
         public void ExtractionFromStreamTest()
         {
+            // TODO: Rewrite this to test against more/all TestData archives.
+
             using (var tmp = new SevenZipExtractor(File.OpenRead(@"TestData\multiple_files.7z")))
             {
                 tmp.ExtractArchive(OutputDirectory);
-
                 Assert.AreEqual(3, Directory.GetFiles(OutputDirectory).Length);
             }
         }

@@ -80,6 +80,12 @@ namespace SevenZip
 
         public int GetProperty(ItemPropId propId, ref PropVariant value)
         {
+            if (_fileInfo == null)
+            {
+                // We are likely opening an archive from a Stream, and no file or _fileInfo exists.
+                return 0;
+            }
+
             switch (propId)
             {
                 case ItemPropId.Name:
@@ -111,6 +117,7 @@ namespace SevenZip
                     value.Int64Value = _fileInfo.LastWriteTime.ToFileTime();
                     break;
             }
+
             return 0;
         }
 
