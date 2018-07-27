@@ -1,29 +1,10 @@
-/*  This file is part of SevenZipSharp.
-
-    SevenZipSharp is free software: you can redistribute it and/or modify
-    it under the terms of the GNU Lesser General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
-
-    SevenZipSharp is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU Lesser General Public License for more details.
-
-    You should have received a copy of the GNU Lesser General Public License
-    along with SevenZipSharp.  If not, see <http://www.gnu.org/licenses/>.
-*/
-
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Runtime.InteropServices;
-#if MONO
-using SevenZip.Mono.COM;
-#endif
-
 namespace SevenZip
 {
+    using System;
+    using System.Collections.Generic;
+    using System.IO;
+    using System.Runtime.InteropServices;
+
 #if UNMANAGED
 #if COMPRESS
     /// <summary>
@@ -94,9 +75,9 @@ namespace SevenZip
         /// Gets or sets the value indicating whether to compress as fast as possible, without calling events.
         /// </summary>
         public bool FastCompression { private get; set; } 
-#if !WINCE
+
         private int _memoryPressure;
-#endif
+
         #endregion
 
         #region Constructors
@@ -282,10 +263,8 @@ namespace SevenZip
         {
             set
             {
-#if !WINCE
                 _memoryPressure = (int)(value * 1024 * 1024);
                 GC.AddMemoryPressure(_memoryPressure);
-#endif
             }
         }
 
@@ -634,18 +613,14 @@ namespace SevenZip
         /// <param name="index">File index</param>
         /// <param name="inStream">Input file stream</param>
         /// <returns>Zero if Ok</returns>
-        public int GetStream(uint index, out 
-#if !MONO
-		                     ISequentialInStream
-#else
-		                     HandleRef
-#endif
-		                     inStream)
+        public int GetStream(uint index, out ISequentialInStream inStream)
         {
             index -= _indexOffset;
+
             if (_files != null)
             {
                 _fileStream = null;
+
                 try
                 {
                     if (File.Exists(_files[index].FullName))
@@ -661,7 +636,9 @@ namespace SevenZip
                     inStream = null;
                     return -1;
                 }
+
                 inStream = _fileStream;
+
                 if (!EventsForGetStream(index))
                 {
                     return -1;
@@ -683,6 +660,7 @@ namespace SevenZip
                     }
                 }
             }
+
             return 0;
         }
 
@@ -751,9 +729,8 @@ namespace SevenZip
 
         public void Dispose()
         {
-#if !WINCE
             GC.RemoveMemoryPressure(_memoryPressure);
-#endif
+
             if (_fileStream != null)
             {
                 try
@@ -762,6 +739,7 @@ namespace SevenZip
                 }
                 catch (ObjectDisposedException) {}
             }
+
             if (_wrappersToDispose != null)
             {
                 foreach (var wrapper in _wrappersToDispose)
@@ -773,6 +751,7 @@ namespace SevenZip
                     catch (ObjectDisposedException) {}
                 }
             }
+
             GC.SuppressFinalize(this);
         }
 

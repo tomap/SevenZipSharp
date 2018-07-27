@@ -1,25 +1,10 @@
-﻿/*  This file is part of SevenZipSharp.
-
-    SevenZipSharp is free software: you can redistribute it and/or modify
-    it under the terms of the GNU Lesser General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
-
-    SevenZipSharp is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU Lesser General Public License for more details.
-
-    You should have received a copy of the GNU Lesser General Public License
-    along with SevenZipSharp.  If not, see <http://www.gnu.org/licenses/>.
-*/
-
-using System;
-using System.IO;
-using SevenZip.Sdk.Compression.Lzma;
-
-namespace SevenZip
+﻿namespace SevenZip
 {
+    using System;
+    using System.IO;
+
+    using SevenZip.Sdk.Compression.Lzma;
+
 #if LZMA_STREAM
 #if COMPRESS
     /// <summary>
@@ -98,24 +83,12 @@ namespace SevenZip
         /// <summary>
         /// Gets a value indicating whether the current stream supports reading.
         /// </summary>
-        public override bool CanRead
-        {
-            get
-            {
-                return false;
-            }
-        }
+        public override bool CanRead => false;
 
         /// <summary>
         /// Gets a value indicating whether the current stream supports seeking.
         /// </summary>
-        public override bool CanSeek
-        {
-            get
-            {
-                return false;
-            }
-        }
+        public override bool CanSeek => false;
 
         /// <summary>
         /// Gets a value indicating whether the current stream supports writing.
@@ -137,10 +110,12 @@ namespace SevenZip
             get
             {
                 DisposedCheck();
+
                 if (_output.CanSeek)
                 {
                     return _output.Length;
                 }
+
                 return _buffer.Position;
             }
         }
@@ -153,16 +128,15 @@ namespace SevenZip
             get
             {
                 DisposedCheck();
+
                 if (_output.CanSeek)
                 {
                     return _output.Position;
                 }
+
                 return _buffer.Position;
             }
-            set
-            {
-                throw new NotSupportedException();
-            }
+            set => throw new NotSupportedException();
         }
 
         private void Init()
