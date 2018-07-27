@@ -9,6 +9,9 @@ Main differences from the original project:
 
 Issues, suggestions, and Pull Requests are welcome!
 
+Known issues:
+* Self-extracting archives cannot be created.
+
 Original project information below, some information might be outdated or won't apply to this fork:
 
 -------------------------------------------------------------
