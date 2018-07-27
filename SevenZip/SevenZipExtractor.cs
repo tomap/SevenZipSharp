@@ -1,3 +1,5 @@
+using System.Linq;
+
 namespace SevenZip
 {
     using System;
@@ -598,25 +600,21 @@ namespace SevenZip
         /// <returns>The array of indexes from 0 to the maximum value in the specified array</returns>
         private static uint[] SolidIndexes(uint[] indexes)
         {
-#if CS4
             int max = indexes.Aggregate(0, (current, i) => Math.Max(current, (int) i));
-#else
-            int max = 0;
-            foreach (uint i in indexes)
-            {
-                max = Math.Max(max, (int)i);
-            }
-#endif
+
             if (max > 0)
             {
                 max++;
                 var res = new uint[max];
+
                 for (int i = 0; i < max; i++)
                 {
                     res[i] = (uint)i;
                 }
+
                 return res;
             }
+
             return indexes;
         }
 
@@ -627,20 +625,7 @@ namespace SevenZip
         /// <returns>True is valid; otherwise, false.</returns>
         private static bool CheckIndexes(params int[] indexes)
         {
-#if CS4 // Wow, C# 4 is great!
             return indexes.All(i => i >= 0);
-#else
-            bool res = true;
-            foreach (int i in indexes)
-            {
-                if (i < 0)
-                {
-                    res = false;
-                    break;
-                }
-            }
-            return res;
-#endif
         }
 
         private void ArchiveExtractCallbackCommonInit(ArchiveExtractCallback aec)
@@ -906,14 +891,9 @@ namespace SevenZip
                 DisposedCheck();
                 InitArchiveFileData(true);
                 var fileNames = new List<string>(_archiveFileData.Count);
-#if CS4
+
                 fileNames.AddRange(_archiveFileData.Select(afi => afi.FileName));
-#else
-                foreach (var afi in _archiveFileData)
-                {
-                    fileNames.Add(afi.FileName);
-                }
-#endif
+
                 return new ReadOnlyCollection<string>(fileNames);
             }
         }
@@ -1111,7 +1091,7 @@ namespace SevenZip
             {
                 uindexes[i] = (uint) indexes[i];
             }
-#if CS4
+
             if (uindexes.Where(i => i >= _filesCount).Any(
                 i => !ThrowException(null, 
                                      new ArgumentOutOfRangeException("indexes", 
@@ -1121,22 +1101,7 @@ namespace SevenZip
             {
                 return;
             }
-#else
-            foreach (uint i in uindexes)
-            {
-                if (i >= _filesCount)
-                {
-                    if (!ThrowException(null,
-                                        new ArgumentOutOfRangeException("indexes",
-                                                                        "Index must be less than " +
-                                                                            _filesCount.Value.ToString(
-                                                                                CultureInfo.InvariantCulture) + "!")))
-                    {
-                        return;
-                    }
-                }
-            }
-#endif
+
             var origIndexes = new List<uint>(uindexes);
             origIndexes.Sort();
             uindexes = origIndexes.ToArray();

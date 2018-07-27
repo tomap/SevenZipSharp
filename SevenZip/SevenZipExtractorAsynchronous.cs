@@ -43,23 +43,11 @@
             }
         }
 
-        internal override void SaveContext(
-#if !DOTNET20
-            DispatcherPriority eventPriority
-#if CS4
-            = DispatcherPriority.Normal
-#endif
-#endif
-)
+        internal override void SaveContext()
         {
             DisposedCheck();
             _asynchronousDisposeLock = true;
-            base.SaveContext(
-#if !DOTNET20
-                eventPriority
-#endif
-            );
-
+            base.SaveContext();
         }
 
         internal override void ReleaseContext()
@@ -124,178 +112,66 @@
         /// </summary>
         /// <param name="directory">The directory where the files are to be unpacked.</param>
 #endif
-        public void BeginExtractArchive(string directory
-#if !DOTNET20
-            , DispatcherPriority eventPriority
-#if CS4
-            = DispatcherPriority.Normal
-#endif
-#endif
-)
+        public void BeginExtractArchive(string directory)
         {
-            SaveContext(
-#if !DOTNET20
-                eventPriority
-#endif
-            );
-            (new ExtractArchiveDelegate(ExtractArchive)).BeginInvoke(directory, AsyncCallbackImplementation, this);
+            SaveContext();
+            new ExtractArchiveDelegate(ExtractArchive).BeginInvoke(directory, AsyncCallbackImplementation, this);
         }
 
-#if !DOTNET20
         /// <summary>
         /// Unpacks the file asynchronously by its name to the specified stream.
         /// </summary>
         /// <param name="fileName">The file full name in the archive file table.</param>
         /// <param name="stream">The stream where the file is to be unpacked.</param>
-        /// <param name="eventPriority">The priority of events, relative to the other pending operations in the System.Windows.Threading.Dispatcher event queue, the specified method is invoked.</param>
-#else
-        /// <summary>
-        /// Unpacks the file asynchronously by its name to the specified stream.
-        /// </summary>
-        /// <param name="fileName">The file full name in the archive file table.</param>
-        /// <param name="stream">The stream where the file is to be unpacked.</param>
-#endif
-        public void BeginExtractFile(string fileName, Stream stream
-#if !DOTNET20
-            , DispatcherPriority eventPriority
-#if CS4
-            = DispatcherPriority.Normal
-#endif
-#endif
-)
+        public void BeginExtractFile(string fileName, Stream stream)
         {
-            SaveContext(
-#if !DOTNET20
-                eventPriority
-#endif
-            );
-            (new ExtractFileByFileNameDelegate(ExtractFile)).BeginInvoke(fileName, stream, AsyncCallbackImplementation, this);
+            SaveContext();
+            new ExtractFileByFileNameDelegate(ExtractFile).BeginInvoke(fileName, stream, AsyncCallbackImplementation, this);
         }
 
-#if !DOTNET20
         /// <summary>
         /// Unpacks the file asynchronously by its index to the specified stream.
         /// </summary>
         /// <param name="index">Index in the archive file table.</param>
         /// <param name="stream">The stream where the file is to be unpacked.</param>
-        /// <param name="eventPriority">The priority of events, relative to the other pending operations in the System.Windows.Threading.Dispatcher event queue, the specified method is invoked.</param>
-#else
-        /// <summary>
-        /// Unpacks the file asynchronously by its index to the specified stream.
-        /// </summary>
-        /// <param name="index">Index in the archive file table.</param>
-        /// <param name="stream">The stream where the file is to be unpacked.</param>
-#endif
-        public void BeginExtractFile(int index, Stream stream
-#if !DOTNET20
-            , DispatcherPriority eventPriority
-#if CS4
-            = DispatcherPriority.Normal
-#endif
-#endif
-)
+        public void BeginExtractFile(int index, Stream stream)
         {
-            SaveContext(
-#if !DOTNET20
-                eventPriority
-#endif
-            );
-            (new ExtractFileByIndexDelegate(ExtractFile)).BeginInvoke(index, stream, AsyncCallbackImplementation, this);
+            SaveContext();
+            new ExtractFileByIndexDelegate(ExtractFile).BeginInvoke(index, stream, AsyncCallbackImplementation, this);
         }
 
-#if !DOTNET20
         /// <summary>
         /// Unpacks files asynchronously by their indices to the specified directory.
         /// </summary>
         /// <param name="indexes">indexes of the files in the archive file table.</param>
         /// <param name="directory">Directory where the files are to be unpacked.</param>
-        /// <param name="eventPriority">The priority of events, relative to the other pending operations in the System.Windows.Threading.Dispatcher event queue, the specified method is invoked.</param>
-#else
-        /// <summary>
-        /// Unpacks files asynchronously by their indices to the specified directory.
-        /// </summary>
-        /// <param name="indexes">indexes of the files in the archive file table.</param>
-        /// <param name="directory">Directory where the files are to be unpacked.</param>
-#endif
-        public void BeginExtractFiles(string directory
-#if !DOTNET20
-            , DispatcherPriority eventPriority 
-#if CS4
-            = DispatcherPriority.Normal
-#endif
-#endif
-            , params int[] indexes)
+        public void BeginExtractFiles(string directory, params int[] indexes)
         {
-            SaveContext(
-#if !DOTNET20
-                eventPriority
-#endif
-            );
-            (new ExtractFiles1Delegate(ExtractFiles)).BeginInvoke(directory, indexes, AsyncCallbackImplementation, this);
+            SaveContext();
+            new ExtractFiles1Delegate(ExtractFiles).BeginInvoke(directory, indexes, AsyncCallbackImplementation, this);
         }
 
-#if !DOTNET20
         /// <summary>
         /// Unpacks files asynchronously by their full names to the specified directory.
         /// </summary>
         /// <param name="fileNames">Full file names in the archive file table.</param>
         /// <param name="directory">Directory where the files are to be unpacked.</param>
-        /// <param name="eventPriority">The priority of events, relative to the other pending operations in the System.Windows.Threading.Dispatcher event queue, the specified method is invoked.</param>
-#else
-        /// <summary>
-        /// Unpacks files asynchronously by their full names to the specified directory.
-        /// </summary>
-        /// <param name="fileNames">Full file names in the archive file table.</param>
-        /// <param name="directory">Directory where the files are to be unpacked.</param>
-#endif
-        public void BeginExtractFiles(string directory
-#if !DOTNET20
-            , DispatcherPriority eventPriority 
-#if CS4
-            = DispatcherPriority.Normal
-#endif
-#endif
-            , params string[] fileNames)
+        public void BeginExtractFiles(string directory, params string[] fileNames)
         {
-            SaveContext(
-#if !DOTNET20
-                eventPriority
-#endif
-            );
-            (new ExtractFiles2Delegate(ExtractFiles)).BeginInvoke(directory, fileNames, AsyncCallbackImplementation, this);
+            SaveContext();
+            new ExtractFiles2Delegate(ExtractFiles).BeginInvoke(directory, fileNames, AsyncCallbackImplementation, this);
         }
 
-#if !DOTNET20
         /// <summary>
         /// Extracts files from the archive asynchronously, giving a callback the choice what
         /// to do with each file. The order of the files is given by the archive.
         /// 7-Zip (and any other solid) archives are NOT supported.
         /// </summary>
         /// <param name="extractFileCallback">The callback to call for each file in the archive.</param>
-        /// <param name="eventPriority">The priority of events, relative to the other pending operations in the System.Windows.Threading.Dispatcher event queue, the specified method is invoked.</param>
-#else
-        /// <summary>
-        /// Extracts files from the archive asynchronously, giving a callback the choice what
-        /// to do with each file. The order of the files is given by the archive.
-        /// 7-Zip (and any other solid) archives are NOT supported.
-        /// </summary>
-        /// <param name="extractFileCallback">The callback to call for each file in the archive.</param>
-#endif
-        public void BeginExtractFiles(ExtractFileCallback extractFileCallback
-#if !DOTNET20
-            , DispatcherPriority eventPriority 
-#if CS4
-            = DispatcherPriority.Normal
-#endif
-#endif
-)
+        public void BeginExtractFiles(ExtractFileCallback extractFileCallback)
         {
-            SaveContext(
-#if !DOTNET20
-                eventPriority
-#endif
-            );
-            (new ExtractFiles3Delegate(ExtractFiles)).BeginInvoke(extractFileCallback, AsyncCallbackImplementation, this);
+            SaveContext();
+            new ExtractFiles3Delegate(ExtractFiles).BeginInvoke(extractFileCallback, AsyncCallbackImplementation, this);
         }
     }
 }
