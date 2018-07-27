@@ -216,6 +216,7 @@ namespace SevenZip
             _fileStream = new InStreamWrapper(stream, false);
             _fileStream.BytesRead += IntEventArgsHandler;
             _actualFilesCount = 1;
+
             try
             {
                 _bytesCount = stream.Length;
@@ -411,6 +412,7 @@ namespace SevenZip
 
                         value.VarType = VarEnum.VT_BSTR;
                         string val = DefaultItemName;
+
                         if (_updateData.Mode != InternalCompressionMode.Modify)
                         {
                             if (_files == null)
@@ -759,12 +761,14 @@ namespace SevenZip
 
         private void IntEventArgsHandler(object sender, IntEventArgs e)
         {
-            var lockObject = (object) _files ?? _streams;
+            var lockObject = ((object) _files ?? _streams) ?? _fileStream;
+
             lock (lockObject)
             {
-                var pold = (byte) ((_bytesWrittenOld*100)/_bytesCount);
+                var pold = (byte) (_bytesWrittenOld*100/_bytesCount);
                 _bytesWritten += e.Value;
                 byte pnow;
+
                 if (_bytesCount < _bytesWritten) //Holy shit, this check for ZIP is golden
                 {
                     pnow = 100;
@@ -773,6 +777,7 @@ namespace SevenZip
                 {
                     pnow = (byte)((_bytesWritten * 100) / _bytesCount);
                 }
+
                 if (pnow > pold)
                 {
                     _bytesWrittenOld = _bytesWritten;

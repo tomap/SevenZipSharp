@@ -193,15 +193,7 @@
                         DirectoryStructure = false
                     };
 
-                    try
-                    {
-                        compressor.CompressStream(input, output);
-                    }
-                    catch (SevenZipException)
-                    {
-                        Assert.Warn("Legacy bug, needs investigation.");
-                        return;
-                    }
+                    compressor.CompressStream(input, output);
                 }
                     
             }
@@ -211,7 +203,7 @@
             using (var extractor = new SevenZipExtractor(TemporaryFile))
             {
                 Assert.AreEqual(1, extractor.FilesCount);
-                Assert.AreEqual("zip.zip", extractor.ArchiveFileNames[0]);
+                Assert.AreEqual(new FileInfo(@"TestData\zip.zip").Length, extractor.ArchiveFileData[0].Size);
             }
         }
 

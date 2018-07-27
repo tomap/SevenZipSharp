@@ -254,7 +254,7 @@ namespace SevenZip
                     {
                         ThrowException(handler,
                                        new SevenZipException(
-                                           "The execution has failed due to the bug in the SevenZipSharp.\n" +
+                                           "Execution has failed due to an internal SevenZipSharp issue.\n" +
                                            "Please report it to https://github.com/squid-box/SevenZipSharp/issues/, include the release number, 7z version used, and attach the archive."));
                     }
                     else
