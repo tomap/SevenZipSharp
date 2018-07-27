@@ -1,30 +1,10 @@
-/*  This file is part of SevenZipSharp.
-
-    SevenZipSharp is free software: you can redistribute it and/or modify
-    it under the terms of the GNU Lesser General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
-
-    SevenZipSharp is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU Lesser General Public License for more details.
-
-    You should have received a copy of the GNU Lesser General Public License
-    along with SevenZipSharp.  If not, see <http://www.gnu.org/licenses/>.
-*/
-
-using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.IO;
-#if MONO
-using SevenZip.Mono.COM;
-using System.Runtime.InteropServices;
-#endif
-
 namespace SevenZip
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Globalization;
+    using System.IO;
+
 #if UNMANAGED
     /// <summary>
     /// Archive extraction callback to handle the process of unpacking files
@@ -56,9 +36,8 @@ namespace SevenZip
         private OutStreamWrapper _fileStream;
         private bool _directoryStructure;
         private int _currentIndex;
-#if !WINCE
         const int MEMORY_PRESSURE = 64 * 1024 * 1024; //64mb seems to be the maximum value
-#endif
+
         #region Constructors
 
         /// <summary>
@@ -151,9 +130,7 @@ namespace SevenZip
             _fakeStream = new FakeOutStreamWrapper();
             _fakeStream.BytesWritten += IntEventArgsHandler;
             _extractor = extractor;
-#if !WINCE
             GC.AddMemoryPressure(MEMORY_PRESSURE);
-#endif
         }
         #endregion
 
@@ -227,9 +204,17 @@ namespace SevenZip
 
         private void IntEventArgsHandler(object sender, IntEventArgs e)
         {
+            // If _bytesCount is not set, we can't update the progress.
+            if (_bytesCount == 0)
+            {
+                return;
+            }
+
+
             var pold = (int)((_bytesWrittenOld * 100) / _bytesCount);
             _bytesWritten += e.Value;
             var pnow = (int)((_bytesWritten * 100) / _bytesCount);
+
             if (pnow > pold)
             {
                 if (pnow > 100)
@@ -264,19 +249,10 @@ namespace SevenZip
         /// <param name="outStream">Output stream pointer</param>
         /// <param name="askExtractMode">Extraction mode</param>
         /// <returns>0 if OK</returns>
-        public int GetStream(uint index, out 
-#if !MONO
-		                     ISequentialOutStream
-#else
-		                     HandleRef
-#endif
-		                     outStream, AskMode askExtractMode)
+        public int GetStream(uint index, out ISequentialOutStream outStream, AskMode askExtractMode)
         {
-#if !MONO
             outStream = null;
-#else
-			outStream = new System.Runtime.InteropServices.HandleRef(null, IntPtr.Zero);		
-#endif			
+
             if (Canceled)
             {
                 return -1;
@@ -345,11 +321,8 @@ namespace SevenZip
                                 }
                                 if (String.IsNullOrEmpty(fnea.FileName))
                                 {
-#if !MONO
                                     outStream = _fakeStream;
-#else
-									outStream = _fakeStream.Handle;								
-#endif
+
                                     goto FileExtractionStartedLabel;
                                 }
                                 fileName = fnea.FileName;
@@ -519,9 +492,8 @@ namespace SevenZip
 
         public void Dispose()
         {
-#if !WINCE
             GC.RemoveMemoryPressure(MEMORY_PRESSURE);
-#endif
+
             if (_fileStream != null)
             {
                 try
@@ -555,8 +527,9 @@ namespace SevenZip
             {
                 throw new SevenZipArchiveException("some archive name is null or empty.");
             }
+
             var splittedFileName = new List<string>(fileName.Split(Path.DirectorySeparatorChar));
-#if !WINCE
+
             foreach (char chr in Path.GetInvalidFileNameChars())
             {
                 for (int i = 0; i < splittedFileName.Count; i++)
@@ -575,7 +548,7 @@ namespace SevenZip
                     }
                 }
             }
-#endif
+
             if (fileName.StartsWith(new string(Path.DirectorySeparatorChar, 2),
                                     StringComparison.CurrentCultureIgnoreCase))
             {
@@ -583,6 +556,7 @@ namespace SevenZip
                 splittedFileName.RemoveAt(0);
                 splittedFileName[0] = new string(Path.DirectorySeparatorChar, 2) + splittedFileName[0];
             }
+
             if (splittedFileName.Count > 2)
             {
                 string tfn = splittedFileName[0];
@@ -595,6 +569,7 @@ namespace SevenZip
                     }
                 }
             }
+
             return String.Join(new string(Path.DirectorySeparatorChar, 1), splittedFileName.ToArray());
         }
     }

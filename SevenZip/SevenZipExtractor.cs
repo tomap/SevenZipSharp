@@ -1,37 +1,15 @@
-/*  This file is part of SevenZipSharp.
-
-    SevenZipSharp is free software: you can redistribute it and/or modify
-    it under the terms of the GNU Lesser General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
-
-    SevenZipSharp is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU Lesser General Public License for more details.
-
-    You should have received a copy of the GNU Lesser General Public License
-    along with SevenZipSharp.  If not, see <http://www.gnu.org/licenses/>.
-*/
-
-using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Diagnostics;
-using System.Globalization;
-using System.IO;
-#if DOTNET20
-using System.Threading;
-#else
-using System.Linq;
-#endif
-using SevenZip.Sdk.Compression.Lzma;
-#if MONO
-using SevenZip.Mono.COM;
-#endif
-
 namespace SevenZip
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Collections.ObjectModel;
+    using System.Diagnostics;
+    using System.Globalization;
+    using System.IO;
+    using System.Linq;
+
+    using SevenZip.Sdk.Compression.Lzma;
+
     /// <summary>
     /// Class to unpack data from archives supported by 7-Zip.
     /// </summary>
@@ -283,15 +261,11 @@ namespace SevenZip
             get
             {
                 DisposedCheck();
-                return _packedSize.HasValue
+                return _packedSize ?? (_fileName != null
                            ?
-                               _packedSize.Value
+                           new FileInfo(_fileName).Length
                            :
-                               _fileName != null
-                                   ?
-                                       (new FileInfo(_fileName)).Length
-                                   :
-                                       -1;
+                           -1);
             }
         }
 
@@ -374,9 +348,8 @@ namespace SevenZip
             {
                 throw new ObjectDisposedException("SevenZipExtractor");
             }
-#if !WINCE
+
             RecreateInstanceIfNeeded();
-#endif
         }
 
         #region Core private functions
@@ -546,15 +519,14 @@ namespace SevenZip
                             var archProps = new List<ArchiveProperty>((int)numProps);
                             for (uint i = 0; i < numProps; i++)
                             {
-                                string propName;
-                                ItemPropId propId;
-                                ushort varType;
-                                _archive.GetArchivePropertyInfo(i, out propName, out propId, out varType);
+                                _archive.GetArchivePropertyInfo(i, out string propName, out var propId, out var varType);
                                 _archive.GetArchiveProperty(propId, ref data);
+
                                 if (propId == ItemPropId.Solid)
                                 {
                                     _isSolid = NativeMethods.SafeCast(data, true);
                                 }
+                                
                                 // TODO Add more archive properties
                                 if (PropIdToName.PropIdNames.ContainsKey(propId))
                                 {
@@ -566,16 +538,17 @@ namespace SevenZip
                                 }
                                 else
                                 {
-                                    Debug.WriteLine(
-                                        "An unknown archive property encountered (code " +
-                                        ((int)propId).ToString(CultureInfo.InvariantCulture) + ')');
+                                    Debug.WriteLine($"An unknown archive property encountered (code {((int)propId).ToString(CultureInfo.InvariantCulture)})");
                                 }
                             }
+
                             _archiveProperties = new ReadOnlyCollection<ArchiveProperty>(archProps);
+
                             if (!_isSolid.HasValue && _format == InArchiveFormat.Zip)
                             {
                                 _isSolid = false;
                             }
+
                             if (!_isSolid.HasValue)
                             {
                                 _isSolid = true;
@@ -592,11 +565,13 @@ namespace SevenZip
                         }
                     }
                 }
+
                 if (disposeStream)
                 {
                     _archive.Close();
                     _archiveStream = null;
                 }
+
                 _archiveFileInfoCollection = new ReadOnlyCollection<ArchiveFileInfo>(_archiveFileData);
             }
         }
@@ -620,25 +595,21 @@ namespace SevenZip
         /// <returns>The array of indexes from 0 to the maximum value in the specified array</returns>
         private static uint[] SolidIndexes(uint[] indexes)
         {
-#if CS4
             int max = indexes.Aggregate(0, (current, i) => Math.Max(current, (int) i));
-#else
-            int max = 0;
-            foreach (uint i in indexes)
-            {
-                max = Math.Max(max, (int)i);
-            }
-#endif
+
             if (max > 0)
             {
                 max++;
                 var res = new uint[max];
+
                 for (int i = 0; i < max; i++)
                 {
                     res[i] = (uint)i;
                 }
+
                 return res;
             }
+
             return indexes;
         }
 
@@ -649,20 +620,7 @@ namespace SevenZip
         /// <returns>True is valid; otherwise, false.</returns>
         private static bool CheckIndexes(params int[] indexes)
         {
-#if CS4 // Wow, C# 4 is great!
             return indexes.All(i => i >= 0);
-#else
-            bool res = true;
-            foreach (int i in indexes)
-            {
-                if (i < 0)
-                {
-                    res = false;
-                    break;
-                }
-            }
-            return res;
-#endif
         }
 
         private void ArchiveExtractCallbackCommonInit(ArchiveExtractCallback aec)
@@ -928,14 +886,9 @@ namespace SevenZip
                 DisposedCheck();
                 InitArchiveFileData(true);
                 var fileNames = new List<string>(_archiveFileData.Count);
-#if CS4
+
                 fileNames.AddRange(_archiveFileData.Select(afi => afi.FileName));
-#else
-                foreach (var afi in _archiveFileData)
-                {
-                    fileNames.Add(afi.FileName);
-                }
-#endif
+
                 return new ReadOnlyCollection<string>(fileNames);
             }
         }
@@ -1133,7 +1086,7 @@ namespace SevenZip
             {
                 uindexes[i] = (uint) indexes[i];
             }
-#if CS4
+
             if (uindexes.Where(i => i >= _filesCount).Any(
                 i => !ThrowException(null, 
                                      new ArgumentOutOfRangeException("indexes", 
@@ -1143,22 +1096,7 @@ namespace SevenZip
             {
                 return;
             }
-#else
-            foreach (uint i in uindexes)
-            {
-                if (i >= _filesCount)
-                {
-                    if (!ThrowException(null,
-                                        new ArgumentOutOfRangeException("indexes",
-                                                                        "Index must be less than " +
-                                                                            _filesCount.Value.ToString(
-                                                                                CultureInfo.InvariantCulture) + "!")))
-                    {
-                        return;
-                    }
-                }
-            }
-#endif
+
             var origIndexes = new List<uint>(uindexes);
             origIndexes.Sort();
             uindexes = origIndexes.ToArray();
@@ -1420,8 +1358,8 @@ namespace SevenZip
                 throw new ArgumentException("The specified streams are invalid.");
             }
             var decoder = new Decoder();
-            long outSize, inSize = (inLength.HasValue ? inLength.Value : inStream.Length) - inStream.Position;
-            decoder.SetDecoderProperties(GetLzmaProperties(inStream, out outSize));
+            var inSize = (inLength ?? inStream.Length) - inStream.Position;
+            decoder.SetDecoderProperties(GetLzmaProperties(inStream, out var outSize));
             decoder.Code(
                 inStream, outStream, inSize, outSize,
                 new LzmaProgressCallback(inSize, codeProgressEvent));
@@ -1438,10 +1376,10 @@ namespace SevenZip
             {
                 var decoder = new Decoder();
                 inStream.Seek(0, 0);
+
                 using (var outStream = new MemoryStream())
                 {
-                    long outSize;
-                    decoder.SetDecoderProperties(GetLzmaProperties(inStream, out outSize));
+                    decoder.SetDecoderProperties(GetLzmaProperties(inStream, out var outSize));
                     decoder.Code(inStream, outStream, inStream.Length - inStream.Position, outSize, null);
                     return outStream.ToArray();
                 }

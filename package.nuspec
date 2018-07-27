@@ -4,13 +4,13 @@
 		<id>Squid-Box.SevenZipSharp</id>
 		<version>1.1.0</version>
 		<authors>Joel Ahlgren, Thomas Piart, markhor</authors>
-		<summary>Managed 7-zip library written in C# that provides data (self-)extraction and compression (all 7-zip formats are supported).</summary>
-		<description>It wraps 7z.dll or any compatible one and makes use of LZMA SDK.</description>
+		<summary>Managed 7-zip library written in C# (.NET 4.5) that provides data (self-)extraction and compression (all 7-zip formats are supported).</summary>
+		<description>Wraps 7z.dll or any compatible one and makes use of LZMA SDK.</description>
 		<language>en-US</language>
 		<licenseUrl>https://github.com/squid-box/SevenZipSharp/blob/master/license</licenseUrl>
 		<projectUrl>https://github.com/squid-box/SevenZipSharp</projectUrl>
 		<tags>7z sevenzip sevenzipsharp 7-zip</tags>
-		<releaseNotes>Includes support for extracting RAR v5 archives.</releaseNotes>
+		<releaseNotes>Fixed bugs when: extracting .gz archives, extracting .bz2 archives, extracting zip file from stream, and compressing a stream into another stream.</releaseNotes>
 	</metadata>
 	<files>
 		<file src="Stage\Release\SevenZipSharp.dll" target="lib\net45" />

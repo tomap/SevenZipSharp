@@ -1,33 +1,16 @@
-﻿/*  This file is part of SevenZipSharp.
-
-    SevenZipSharp is free software: you can redistribute it and/or modify
-    it under the terms of the GNU Lesser General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
-
-    SevenZipSharp is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU Lesser General Public License for more details.
-
-    You should have received a copy of the GNU Lesser General Public License
-    along with SevenZipSharp.  If not, see <http://www.gnu.org/licenses/>.
-*/
-
-
-using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.IO;
-using System.Reflection;
-using System.Text;
-using System.Xml;
-using System.Xml.Schema;
-
-namespace SevenZip
+﻿namespace SevenZip
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Globalization;
+    using System.IO;
+    using System.Reflection;
+    using System.Text;
+    using System.Xml;
+    using System.Xml.Schema;
+
 #if SFX
-    using SfxSettings = Dictionary<string, string>;
+    using SfxSettings = System.Collections.Generic.Dictionary<string, string>;
 
     /// <summary>
     /// Sfx module choice enumeration
@@ -114,23 +97,14 @@ namespace SevenZip
         /// <summary>
         /// Gets the sfx module type.
         /// </summary>
-        public SfxModule SfxModule
-        {
-            get
-            {
-                return _module;
-            }
-        }
+        public SfxModule SfxModule => _module;
 
         /// <summary>
         /// Gets or sets the custom sfx module file name
         /// </summary>
         public string ModuleFileName
         {
-            get
-            {
-                return _moduleFileName;
-            }
+            get => _moduleFileName;
 
             set
             {
@@ -138,10 +112,12 @@ namespace SevenZip
                 {
                     throw new ArgumentException("The specified file does not exist.");
                 }
+
                 _moduleFileName = value;
                 _module = SfxModule.Custom;
-                string sfxName = Path.GetFileName(value);
-                foreach (SfxModule mod in SfxSupportedModuleNames.Keys)
+                var sfxName = Path.GetFileName(value);
+
+                foreach (var mod in SfxSupportedModuleNames.Keys)
                 {
                     if (SfxSupportedModuleNames[mod].Contains(sfxName))
                     {
@@ -158,11 +134,7 @@ namespace SevenZip
 
         private static string GetResourceString(string str)
         {
-#if !WINCE
             return "SevenZip.sfx." + str;
-#else
-            return "SevenZipSharpMobile.sfx." + str;
-#endif
         }
 
         /// <summary>
@@ -352,6 +324,16 @@ namespace SevenZip
         /// <param name="dest">The destination stream to wrie to.</param>
         private static void WriteStream(Stream src, Stream dest)
         {
+            if (src == null)
+            {
+                throw new ArgumentNullException(nameof(src));
+            }
+
+            if (dest == null)
+            {
+                throw new ArgumentNullException(nameof(dest));
+            }
+
             src.Seek(0, SeekOrigin.Begin);
             var buf = new byte[32768];
             int bytesRead;
@@ -410,7 +392,9 @@ namespace SevenZip
             {
                 throw new ArgumentException("The specified output stream can not write.", "sfxStream");
             }
+
             ValidateSettings(settings);
+
             using (Stream sfx = _module == SfxModule.Default
                                     ? Assembly.GetExecutingAssembly().GetManifestResourceStream(
                                             GetResourceString(SfxSupportedModuleNames[_module][0]))

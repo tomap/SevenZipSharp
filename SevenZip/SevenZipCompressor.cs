@@ -1,40 +1,16 @@
-/*  This file is part of SevenZipSharp.
-
-    SevenZipSharp is free software: you can redistribute it and/or modify
-    it under the terms of the GNU Lesser General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
-
-    SevenZipSharp is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU Lesser General Public License for more details.
-
-    You should have received a copy of the GNU Lesser General Public License
-    along with SevenZipSharp.  If not, see <http://www.gnu.org/licenses/>.
-*/
-
-using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.IO;
-#if DOTNET20
-using System.Threading;
-#else
-using System.Linq;
-#endif
-using System.Runtime.InteropServices;
-#if !WINCE
-using System.Security.Permissions;
-#endif
-using SevenZip.Sdk;
-using SevenZip.Sdk.Compression.Lzma;
-#if MONO
-using SevenZip.Mono.COM;
-#endif
-
 namespace SevenZip
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Globalization;
+    using System.IO;
+    using System.Linq;
+    using System.Runtime.InteropServices;
+    using System.Security.Permissions;
+
+    using SevenZip.Sdk;
+    using SevenZip.Sdk.Compression.Lzma;
+
 #if COMPRESS
     /// <summary>
     /// Class to pack data into archives supported by 7-Zip.
@@ -132,12 +108,8 @@ namespace SevenZip
         {
             try
             {
-#if !WINCE
                 TempFolderPath = Path.GetTempPath();
                 //TempFolderPath = Environment.GetEnvironmentVariable("TEMP", EnvironmentVariableTarget.User);
-#else
-                TempFolderPath = "Temp";
-#endif
             }
             catch (System.Security.SecurityException) // Registry access is not allowed, etc.
             {
@@ -281,10 +253,9 @@ namespace SevenZip
                     }
                     var names = new List<IntPtr>(2 + CustomParameters.Count);
                     var values = new List<PropVariant>(2 + CustomParameters.Count);
-#if !WINCE
                     var sp = new SecurityPermission(SecurityPermissionFlag.UnmanagedCode);
                     sp.Demand();
-#endif
+
                     #region Initialize compression properties
 
                     if (_compressionMethod == CompressionMethod.Default)
@@ -391,13 +362,9 @@ namespace SevenZip
                         var tmp = new PropVariant
                         {
                             VarType = VarEnum.VT_BSTR,
-                            Value = Marshal.StringToBSTR(
-#if !WINCE
-Enum.GetName(typeof(ZipEncryptionMethod), ZipEncryptionMethod))
-#else
-                            OpenNETCF.Enum2.GetName(typeof (ZipEncryptionMethod), ZipEncryptionMethod))
-#endif
+                            Value = Marshal.StringToBSTR(Enum.GetName(typeof(ZipEncryptionMethod), ZipEncryptionMethod))
                         };
+
                         values.Add(tmp);
                     }
 
@@ -405,6 +372,7 @@ Enum.GetName(typeof(ZipEncryptionMethod), ZipEncryptionMethod))
 
                     var namesHandle = GCHandle.Alloc(names.ToArray(), GCHandleType.Pinned);
                     var valuesHandle = GCHandle.Alloc(values.ToArray(), GCHandleType.Pinned);
+
                     try
                     {
                         if (setter != null) //ReSharper
@@ -428,15 +396,9 @@ Enum.GetName(typeof(ZipEncryptionMethod), ZipEncryptionMethod))
         private static int CommonRoot(ICollection<string> files)
         {
             var splittedFileNames = new List<string[]>(files.Count);
-#if CS4
             splittedFileNames.AddRange(files.Select(fn => fn.Split(Path.DirectorySeparatorChar)));
-#else
-            foreach (string fn in files)
-            {
-                splittedFileNames.Add(fn.Split(Path.DirectorySeparatorChar));
-            }
-#endif
             int minSplitLength = splittedFileNames[0].Length - 1;
+
             if (files.Count > 1)
             {
                 for (int i = 1; i < files.Count; i++)
@@ -447,7 +409,9 @@ Enum.GetName(typeof(ZipEncryptionMethod), ZipEncryptionMethod))
                     }
                 }
             }
+
             string res = "";
+
             for (int i = 0; i < minSplitLength; i++)
             {
                 bool common = true;
@@ -478,6 +442,7 @@ Enum.GetName(typeof(ZipEncryptionMethod), ZipEncryptionMethod))
         private static void CheckCommonRoot(string[] files, ref int commonRootLength)
         {
             string commonRoot;
+
             try
             {
                 commonRoot = files[0].Substring(0, commonRootLength);
@@ -486,25 +451,17 @@ Enum.GetName(typeof(ZipEncryptionMethod), ZipEncryptionMethod))
             {
                 throw new SevenZipInvalidFileNamesException("invalid common root.");
             }
+
             if (commonRoot.EndsWith(new string(Path.DirectorySeparatorChar, 1), StringComparison.CurrentCulture))
             {
                 commonRoot = commonRoot.Substring(0, commonRootLength - 1);
                 commonRootLength--;
             }
-#if CS4
+
             if (files.Any(fn => !fn.StartsWith(commonRoot, StringComparison.CurrentCulture)))
             {
                 throw new SevenZipInvalidFileNamesException("invalid common root.");
             }
-#else
-            foreach (string fn in files)
-            {
-                if (!fn.StartsWith(commonRoot, StringComparison.CurrentCulture))
-                {
-                    throw new SevenZipInvalidFileNamesException("invalid common root.");
-                }
-            }
-#endif
         }
 
         /// <summary>
@@ -547,30 +504,13 @@ Enum.GetName(typeof(ZipEncryptionMethod), ZipEncryptionMethod))
             string commonRoot = files[0].Substring(0, commonRootLength);
             if (directoryCompress)
             {
-#if CS4
                 fis.AddRange(files.Select(fn => new FileInfo(fn)));
-#else
-                foreach (string fn in files)
-                {
-                    fis.Add(new FileInfo(fn));
-                }
-#endif
             }
             else
             {
                 if (!directoryStructure)
                 {
-#if CS4
                     fis.AddRange(from fn in files where !Directory.Exists(fn) select new FileInfo(fn));
-#else
-                    foreach (string fn in files)
-                    {
-                        if (!Directory.Exists(fn))
-                        {
-                            fis.Add(new FileInfo(fn));
-                        }
-                    }
-#endif
                 }
                 else
                 {
@@ -962,14 +902,12 @@ Enum.GetName(typeof(ZipEncryptionMethod), ZipEncryptionMethod))
         /// </summary>
         public OutArchiveFormat ArchiveFormat
         {
-            get
-            {
-                return _archiveFormat;
-            }
+            get => _archiveFormat;
 
             set
             {
                 _archiveFormat = value;
+
                 if (!MethodIsValid(_compressionMethod))
                 {
                     _compressionMethod = CompressionMethod.Default;
@@ -982,15 +920,9 @@ Enum.GetName(typeof(ZipEncryptionMethod), ZipEncryptionMethod))
         /// </summary>
         public CompressionMethod CompressionMethod
         {
-            get
-            {
-                return _compressionMethod;
-            }
+            get => _compressionMethod;
 
-            set
-            {
-                _compressionMethod = !MethodIsValid(value) ? CompressionMethod.Default : value;
-            }
+            set => _compressionMethod = !MethodIsValid(value) ? CompressionMethod.Default : value;
         }
 
         /// <summary>
@@ -998,15 +930,9 @@ Enum.GetName(typeof(ZipEncryptionMethod), ZipEncryptionMethod))
         /// </summary>
         public int VolumeSize
         {
-            get
-            {
-                return _volumeSize;
-            }
+            get => _volumeSize;
 
-            set
-            {
-                _volumeSize = value > 0 ? value : 0;
-            }
+            set => _volumeSize = value > 0 ? value : 0;
         }
         #endregion
 
@@ -1214,152 +1140,6 @@ Enum.GetName(typeof(ZipEncryptionMethod), ZipEncryptionMethod))
 
         #region CompressDirectory overloads
 
-#if !CS4
-        /// <summary>
-        /// Recursively packs all files in the specified directory.
-        /// </summary>
-        /// <param name="directory">The directory to compress.</param>
-        /// <param name="archiveName">The archive file name.</param>
-        public void CompressDirectory(
-            string directory, string archiveName)
-        {
-            CompressDirectory(directory, archiveName, "", "*", true);
-        }
-
-        /// <summary>
-        /// Recursively packs all files in the specified directory.
-        /// </summary>
-        /// <param name="directory">The directory to compress.</param>
-        /// <param name="archiveStream">The archive output stream.
-        /// Use CompressDirectory( ... string archiveName ... ) overloads for archiving to disk.</param>
-        public void CompressDirectory(
-            string directory, Stream archiveStream)
-        {
-            CompressDirectory(directory, archiveStream, "", "*", true);
-        }
-
-        /// <summary>
-        /// Recursively packs all files in the specified directory.
-        /// </summary>
-        /// <param name="directory">The directory to compress.</param>
-        /// <param name="archiveName">The archive file name.</param>
-        /// <param name="password">The archive password.</param>
-        public void CompressDirectory(
-            string directory, string archiveName, string password)
-        {
-            CompressDirectory(directory, archiveName, password, "*", true);
-        }
-
-        /// <summary>
-        /// Recursively packs all files in the specified directory.
-        /// </summary>
-        /// <param name="directory">The directory to compress.</param>
-        /// <param name="archiveStream">The archive output stream.
-        /// Use CompressDirectory( ... string archiveName ... ) overloads for archiving to disk.</param>
-        /// <param name="password">The archive password.</param>
-        public void CompressDirectory(
-            string directory, Stream archiveStream, string password)
-        {
-            CompressDirectory(directory, archiveStream, password, "*", true);
-        }
-
-        /// <summary>
-        /// Packs all files in the specified directory.
-        /// </summary>
-        /// <param name="directory">The directory to compress.</param>
-        /// <param name="archiveName">The archive file name.</param>
-        /// <param name="recursion">If true, files will be searched for recursively; otherwise, not.</param>
-        public void CompressDirectory(
-            string directory, string archiveName, bool recursion)
-        {
-            CompressDirectory(directory, archiveName, "", "*", recursion);
-        }
-
-        /// <summary>
-        /// Packs all files in the specified directory.
-        /// </summary>
-        /// <param name="directory">The directory to compress.</param>
-        /// <param name="archiveStream">The archive output stream.
-        /// Use CompressDirectory( ... string archiveName ... ) overloads for archiving to disk.</param>
-        /// <param name="recursion">If true, files will be searched for recursively; otherwise, not.</param>
-        public void CompressDirectory(
-            string directory, Stream archiveStream, bool recursion)
-        {
-            CompressDirectory(directory, archiveStream, "", "*", recursion);
-        }
-
-        /// <summary>
-        /// Packs all files found by the specified pattern in the specified directory.
-        /// </summary>
-        /// <param name="directory">The directory to compress.</param>
-        /// <param name="archiveName">The archive file name.</param>
-        /// <param name="searchPattern">Search string, such as "*.txt".</param>
-        /// <param name="recursion">If true, files will be searched for recursively; otherwise, not.</param>
-        public void CompressDirectory(
-            string directory, string archiveName,
-            string searchPattern, bool recursion)
-        {
-            CompressDirectory(directory, archiveName, "", searchPattern, recursion);
-        }
-
-        /// <summary>
-        /// Packs all files found by the specified pattern in the specified directory.
-        /// </summary>
-        /// <param name="directory">The directory to compress.</param>
-        /// <param name="archiveStream">The archive output stream.
-        /// Use CompressDirectory( ... string archiveName ... ) overloads for archiving to disk.</param>
-        /// <param name="searchPattern">Search string, such as "*.txt".</param>
-        /// <param name="recursion">If true, files will be searched for recursively; otherwise, not.</param>
-        public void CompressDirectory(
-            string directory, Stream archiveStream,
-            string searchPattern, bool recursion)
-        {
-            CompressDirectory(directory, archiveStream, "", searchPattern, recursion);
-        }
-
-        /// <summary>
-        /// Packs all files in the specified directory.
-        /// </summary>
-        /// <param name="directory">The directory to compress.</param>
-        /// <param name="archiveName">The archive file name.</param>        
-        /// <param name="recursion">If true, files will be searched for recursively; otherwise, not.</param>
-        /// <param name="password">The archive password.</param>
-        public void CompressDirectory(
-            string directory, string archiveName,
-            bool recursion, string password)
-        {
-            CompressDirectory(directory, archiveName, password, "*", recursion);
-        }
-
-        /// <summary>
-        /// Packs all files in the specified directory.
-        /// </summary>
-        /// <param name="directory">The directory to compress.</param>
-        /// <param name="archiveStream">The archive output stream.
-        /// Use CompressDirectory( ... string archiveName ... ) overloads for archiving to disk.</param>        
-        /// <param name="recursion">If true, files will be searched for recursively; otherwise, not.</param>
-        /// <param name="password">The archive password.</param>
-        public void CompressDirectory(
-            string directory, Stream archiveStream,
-            bool recursion, string password)
-        {
-            CompressDirectory(directory, archiveStream, password, "*", recursion);
-        }
-#endif
-
-#if !CS4
-        /// <summary>
-        /// Packs all files in the specified directory.
-        /// </summary>
-        /// <param name="directory">The directory to compress.</param>
-        /// <param name="archiveName">The archive file name.</param>
-        /// <param name="password">The archive password.</param>
-        /// <param name="searchPattern">Search string, such as "*.txt".</param>
-        /// <param name="recursion">If true, files will be searched for recursively; otherwise, not.</param>
-        public void CompressDirectory(
-            string directory, string archiveName,
-            string password, string searchPattern, bool recursion)
-#else
         /// <summary>
         /// Packs all files in the specified directory.
         /// </summary>
@@ -1371,7 +1151,6 @@ Enum.GetName(typeof(ZipEncryptionMethod), ZipEncryptionMethod))
         public void CompressDirectory(
             string directory, string archiveName,
             string password = "", string searchPattern = "*", bool recursion = true)
-#endif
         {
             _compressingFilesOnDisk = true;
             _archiveName = archiveName;
@@ -1386,20 +1165,6 @@ Enum.GetName(typeof(ZipEncryptionMethod), ZipEncryptionMethod))
             FinalizeUpdate();
         }
 
-#if !CS4
-        /// <summary>
-        /// Packs all files in the specified directory.
-        /// </summary>
-        /// <param name="directory">The directory to compress.</param>
-        /// <param name="archiveStream">The archive output stream.
-        /// Use CompressDirectory( ... string archiveName ... ) overloads for archiving to disk.</param>        
-        /// <param name="password">The archive password.</param>
-        /// <param name="searchPattern">Search string, such as "*.txt".</param>
-        /// <param name="recursion">If true, files will be searched for recursively; otherwise, not.</param>
-        public void CompressDirectory(
-            string directory, Stream archiveStream,
-            string password, string searchPattern, bool recursion)
-#else
         /// <summary>
         /// Packs all files in the specified directory.
         /// </summary>
@@ -1412,33 +1177,29 @@ Enum.GetName(typeof(ZipEncryptionMethod), ZipEncryptionMethod))
         public void CompressDirectory(
             string directory, Stream archiveStream,
             string password = "", string searchPattern = "*", bool recursion = true)
-#endif
         {
             var files = new List<string>();
+
             if (!Directory.Exists(directory))
             {
                 throw new ArgumentException("Directory \"" + directory + "\" does not exist!");
             }
+
             if (RecursiveDirectoryEmptyCheck(directory))
             {
                 throw new SevenZipInvalidFileNamesException("the specified directory is empty!");
             }
+
             if (recursion)
             {
                 AddFilesFromDirectory(directory, files, searchPattern);
             }
             else
             {
-#if CS4
                 files.AddRange((new DirectoryInfo(directory)).GetFiles(searchPattern).Select(fi => fi.FullName));
-#else
-                foreach (FileInfo fi in (new DirectoryInfo(directory)).GetFiles(searchPattern))
-                {
-                    files.Add(fi.FullName);
-                }
-#endif
             }
             int commonRootLength = directory.Length;
+
             if (directory.EndsWith("\\", StringComparison.OrdinalIgnoreCase))
             {
                 directory = directory.Substring(0, directory.Length - 1);
@@ -1447,12 +1208,14 @@ Enum.GetName(typeof(ZipEncryptionMethod), ZipEncryptionMethod))
             {
                 commonRootLength++;
             }
+
             if (PreserveDirectoryRoot)
             {
                 var upperRoot = Path.GetDirectoryName(directory);
                 commonRootLength = upperRoot.Length +
                     (upperRoot.EndsWith("\\", StringComparison.OrdinalIgnoreCase) ? 0 : 1);
             }
+
             _directoryCompress = true;
             CompressFilesEncrypted(archiveStream, commonRootLength, password, files.ToArray());
         }
@@ -1461,44 +1224,6 @@ Enum.GetName(typeof(ZipEncryptionMethod), ZipEncryptionMethod))
 
         #region CompressFileDictionary overloads
 
-#if !CS4
-        /// <summary>
-        /// Packs the specified file dictionary.
-        /// </summary>
-        /// <param name="fileDictionary">Dictionary&lt;name of the archive entry, file name&gt;.
-        /// If a file name is null, the corresponding archive entry becomes a directory.</param>
-        /// <param name="archiveName">The archive file name.</param>
-        public void CompressFileDictionary(
-            Dictionary<string, string> fileDictionary, string archiveName)
-        {
-            CompressFileDictionary(fileDictionary, archiveName, "");
-        }
-
-        /// <summary>
-        /// Packs the specified file dictionary.
-        /// </summary>
-        /// <param name="fileDictionary">Dictionary&lt;name of the archive entry, file name&gt;.
-        /// If a file name is null, the corresponding archive entry becomes a directory.</param>
-        /// <param name="archiveStream">The archive output stream.
-        /// Use CompressFileDictionary( ... string archiveName ... ) overloads for archiving to disk.</param>
-        public void CompressFileDictionary(
-            Dictionary<string, string> fileDictionary, Stream archiveStream)
-        {
-            CompressFileDictionary(fileDictionary, archiveStream, "");
-        }
-#endif
-
-#if !CS4
-        /// <summary>
-        /// Packs the specified file dictionary.
-        /// </summary>
-        /// <param name="fileDictionary">Dictionary&lt;name of the archive entry, file name&gt;.
-        /// If a file name is null, the corresponding archive entry becomes a directory.</param>
-        /// <param name="archiveName">The archive file name.</param>
-        /// <param name="password">The archive password.</param>
-        public void CompressFileDictionary(
-            Dictionary<string, string> fileDictionary, string archiveName, string password)
-#else
         /// <summary>
         /// Packs the specified file dictionary.
         /// </summary>
@@ -1508,7 +1233,6 @@ Enum.GetName(typeof(ZipEncryptionMethod), ZipEncryptionMethod))
         /// <param name="password">The archive password.</param>
         public void CompressFileDictionary(
             Dictionary<string, string> fileDictionary, string archiveName, string password = "")
-#endif
         {
             _compressingFilesOnDisk = true;
             _archiveName = archiveName;
@@ -1523,18 +1247,6 @@ Enum.GetName(typeof(ZipEncryptionMethod), ZipEncryptionMethod))
             FinalizeUpdate();
         }
 
-#if !CS4
-        /// <summary>
-        /// Packs the specified file dictionary.
-        /// </summary>
-        /// <param name="fileDictionary">Dictionary&lt;name of the archive entry, file name&gt;.
-        /// If a file name is null, the corresponding archive entry becomes a directory.</param>
-        /// <param name="archiveStream">The archive output stream.
-        /// Use CompressStreamDictionary( ... string archiveName ... ) overloads for archiving to disk.</param>
-        /// <param name="password">The archive password.</param>
-        public void CompressFileDictionary(
-            Dictionary<string, string> fileDictionary, Stream archiveStream, string password)
-#else
         /// <summary>
         /// Packs the specified file dictionary.
         /// </summary>
@@ -1545,9 +1257,9 @@ Enum.GetName(typeof(ZipEncryptionMethod), ZipEncryptionMethod))
         /// <param name="password">The archive password.</param>
         public void CompressFileDictionary(
             Dictionary<string, string> fileDictionary, Stream archiveStream, string password = "")
-#endif
         {
             var streamDict = new Dictionary<string, Stream>(fileDictionary.Count);
+
             foreach (var pair in fileDictionary)
             {
                 if (pair.Value == null)
@@ -1565,6 +1277,7 @@ Enum.GetName(typeof(ZipEncryptionMethod), ZipEncryptionMethod))
                         new FileStream(pair.Value, FileMode.Open, FileAccess.Read, FileShare.ReadWrite));
                 }
             }
+
             //The created streams will be automatically disposed inside.
             CompressStreamDictionary(streamDict, archiveStream, password);
         }
@@ -1572,44 +1285,7 @@ Enum.GetName(typeof(ZipEncryptionMethod), ZipEncryptionMethod))
         #endregion
 
         #region CompressStreamDictionary overloads
-#if !CS4
-        /// <summary>
-        /// Packs the specified stream dictionary.
-        /// </summary>
-        /// <param name="streamDictionary">Dictionary&lt;name of the archive entry, stream&gt;.
-        /// If a stream is null, the corresponding string becomes a directory name.</param>
-        /// <param name="archiveName">The archive file name.</param>
-        public void CompressStreamDictionary(
-            Dictionary<string, Stream> streamDictionary, string archiveName)
-        {
-            CompressStreamDictionary(streamDictionary, archiveName, "");
-        }
 
-        /// <summary>
-        /// Packs the specified stream dictionary.
-        /// </summary>
-        /// <param name="streamDictionary">Dictionary&lt;name of the archive entry, stream&gt;.
-        /// If a stream is null, the corresponding string becomes a directory name.</param>
-        /// <param name="archiveStream">The archive output stream.
-        /// Use CompressStreamDictionary( ... string archiveName ... ) overloads for archiving to disk.</param>
-        public void CompressStreamDictionary(
-            Dictionary<string, Stream> streamDictionary, Stream archiveStream)
-        {
-            CompressStreamDictionary(streamDictionary, archiveStream, "");
-        }
-#endif
-
-#if !CS4
-        /// <summary>
-        /// Packs the specified stream dictionary.
-        /// </summary>
-        /// <param name="streamDictionary">Dictionary&lt;name of the archive entry, stream&gt;.
-        /// If a stream is null, the corresponding string becomes a directory name.</param>
-        /// <param name="archiveName">The archive file name.</param>
-        /// <param name="password">The archive password.</param>
-        public void CompressStreamDictionary(
-            Dictionary<string, Stream> streamDictionary, string archiveName, string password)
-#else
         /// <summary>
         /// Packs the specified stream dictionary.
         /// </summary>
@@ -1619,7 +1295,6 @@ Enum.GetName(typeof(ZipEncryptionMethod), ZipEncryptionMethod))
         /// <param name="password">The archive password.</param>
         public void CompressStreamDictionary(
             Dictionary<string, Stream> streamDictionary, string archiveName, string password = "")
-#endif
         {
             _compressingFilesOnDisk = true;
             _archiveName = archiveName;
@@ -1634,18 +1309,6 @@ Enum.GetName(typeof(ZipEncryptionMethod), ZipEncryptionMethod))
             FinalizeUpdate();
         }
 
-#if !CS4
-        /// <summary>
-        /// Packs the specified stream dictionary.
-        /// </summary>
-        /// <param name="streamDictionary">Dictionary&lt;name of the archive entry, stream&gt;.
-        /// If a stream is null, the corresponding string becomes a directory name.</param>
-        /// <param name="archiveStream">The archive output stream.
-        /// Use CompressStreamDictionary( ... string archiveName ... ) overloads for archiving to disk.</param>
-        /// <param name="password">The archive password.</param>
-        public void CompressStreamDictionary(
-            Dictionary<string, Stream> streamDictionary, Stream archiveStream, string password)
-#else
         /// <summary>
         /// Packs the specified stream dictionary.
         /// </summary>
@@ -1656,9 +1319,9 @@ Enum.GetName(typeof(ZipEncryptionMethod), ZipEncryptionMethod))
         /// <param name="password">The archive password.</param>
         public void CompressStreamDictionary(
             Dictionary<string, Stream> streamDictionary, Stream archiveStream, string password = "")
-#endif
         {
             ClearExceptions();
+
             if (streamDictionary.Count > 1 &&
                 (_archiveFormat == OutArchiveFormat.BZip2 || _archiveFormat == OutArchiveFormat.GZip ||
                 _archiveFormat == OutArchiveFormat.XZ))
@@ -1669,11 +1332,12 @@ Enum.GetName(typeof(ZipEncryptionMethod), ZipEncryptionMethod))
                     return;
                 }
             }
+
             if (_volumeSize == 0 || !_compressingFilesOnDisk)
             {
                 ValidateStream(archiveStream);
             }
-#if CS4
+
             if (streamDictionary.Where(
                 pair => pair.Value != null && (!pair.Value.CanSeek || !pair.Value.CanRead)).Any(
                     pair => !ThrowException(null,
@@ -1682,20 +1346,7 @@ Enum.GetName(typeof(ZipEncryptionMethod), ZipEncryptionMethod))
             {
                 return;
             }
-#else
-            foreach (var pair in streamDictionary)
-            {
-                if (pair.Value != null && (!pair.Value.CanSeek || !pair.Value.CanRead))
-                {
-                    if (!ThrowException(null, new ArgumentException(
-                            "The specified stream dictionary contains an invalid stream corresponding to the archive entry \"" + pair.Key + "\".",
-                            "streamDictionary")))
-                    {
-                        return;
-                    }
-                }
-            }
-#endif
+
             try
             {
                 ISequentialOutStream sequentialArchiveStream;
@@ -1758,18 +1409,6 @@ Enum.GetName(typeof(ZipEncryptionMethod), ZipEncryptionMethod))
 
         #region CompressStream overloads
 
-#if !CS4       
-        /// <summary>
-        /// Compresses the specified stream.
-        /// </summary>
-        /// <param name="inStream">The source uncompressed stream.</param>
-        /// <param name="outStream">The destination compressed stream.</param>
-        /// <exception cref="ArgumentException">ArgumentException: at least one of the specified streams is invalid.</exception>
-        public void CompressStream(Stream inStream, Stream outStream)
-        {
-            CompressStream(inStream, outStream, "");
-        }
-#endif
         /// <summary>
         /// Compresses the specified stream.
         /// </summary>
@@ -1777,13 +1416,10 @@ Enum.GetName(typeof(ZipEncryptionMethod), ZipEncryptionMethod))
         /// <param name="outStream">The destination compressed stream.</param>
         /// <param name="password">The archive password.</param>
         /// <exception cref="ArgumentException">ArgumentException: at least one of the specified streams is invalid.</exception>
-        public void CompressStream(Stream inStream, Stream outStream, string password 
-#if CS4
-            = ""
-#endif
-        )
+        public void CompressStream(Stream inStream, Stream outStream, string password = "")
         {
             ClearExceptions();
+
             if (!inStream.CanSeek || !inStream.CanRead || !outStream.CanWrite)
             {
                 if (!ThrowException(null, new ArgumentException("The specified streams are invalid.")))
@@ -1791,6 +1427,7 @@ Enum.GetName(typeof(ZipEncryptionMethod), ZipEncryptionMethod))
                     return;
                 }
             }
+
             try
             {
                 SevenZipLibraryManager.LoadLibrary(this, _archiveFormat);
@@ -1818,23 +1455,13 @@ Enum.GetName(typeof(ZipEncryptionMethod), ZipEncryptionMethod))
                 SevenZipLibraryManager.FreeLibrary(this, _archiveFormat);
                 OnEvent(CompressionFinished, EventArgs.Empty, false);
             }
+
             ThrowUserException();
         }
 
         #endregion
 
         #region ModifyArchive overloads
-#if !CS4
-        /// <summary>
-        /// Modifies the existing archive (renames files or deletes them).
-        /// </summary>
-        /// <param name="archiveName">The archive file name.</param>
-        /// <param name="newFileNames">New file names. Null value to delete the corresponding index.</param>
-        public void ModifyArchive(string archiveName, Dictionary<int, string> newFileNames)
-        {
-            ModifyArchive(archiveName, newFileNames, "");
-        }
-#endif
 
         /// <summary>
         /// Modifies the existing archive (renames files or deletes them).
@@ -1842,17 +1469,15 @@ Enum.GetName(typeof(ZipEncryptionMethod), ZipEncryptionMethod))
         /// <param name="archiveName">The archive file name.</param>
         /// <param name="newFileNames">New file names. Null value to delete the corresponding index.</param>
         /// <param name="password">The archive password.</param>
-        public void ModifyArchive(string archiveName, Dictionary<int, string> newFileNames, string password 
-#if CS4 
-            = ""
-#endif
-        )
+        public void ModifyArchive(string archiveName, Dictionary<int, string> newFileNames, string password = "")
         {
             ClearExceptions();
+
             if (!SevenZipLibraryManager.ModifyCapable)
             {
                 throw new SevenZipLibraryException("The specified 7zip native library does not support this method.");
             }
+
             if (!File.Exists(archiveName))
             {
                 if (!ThrowException(null, new ArgumentException("The specified archive does not exist.", "archiveName")))
@@ -1860,6 +1485,7 @@ Enum.GetName(typeof(ZipEncryptionMethod), ZipEncryptionMethod))
                     return;
                 }
             }
+
             if (newFileNames == null || newFileNames.Count == 0)
             {
                 if (!ThrowException(null, new ArgumentException("Invalid new file names.", "newFileNames")))
@@ -1867,6 +1493,7 @@ Enum.GetName(typeof(ZipEncryptionMethod), ZipEncryptionMethod))
                     return;
                 }
             }
+
             try
             {
                 using (var extr = new SevenZipExtractor(archiveName))
@@ -1886,6 +1513,7 @@ Enum.GetName(typeof(ZipEncryptionMethod), ZipEncryptionMethod))
                     return;
                 }
             }
+
             try
             {
                 ISequentialOutStream sequentialArchiveStream;
@@ -1909,18 +1537,8 @@ Enum.GetName(typeof(ZipEncryptionMethod), ZipEncryptionMethod))
                             UInt32 deleteCount = 0;
                             if (_updateData.FileNamesToModify != null)
                             {
-#if CS4 // System.Linq of C# 4 is great
                                 deleteCount = (UInt32)_updateData.FileNamesToModify.Sum(
                                     pairDeleted => pairDeleted.Value == null ? 1 : 0);
-#else
-                                foreach(var pairDeleted in _updateData.FileNamesToModify)
-                                {
-                                    if (pairDeleted.Value == null)
-                                    {
-                                        deleteCount++;
-                                    }
-                                }
-#endif
                             }
                             try
                             {
@@ -1960,14 +1578,8 @@ Enum.GetName(typeof(ZipEncryptionMethod), ZipEncryptionMethod))
         /// </summary>
         public static int LzmaDictionarySize
         {
-            get
-            {
-                return _lzmaDictionarySize;
-            }
-            set
-            {
-                _lzmaDictionarySize = value;
-            }
+            get => _lzmaDictionarySize;
+            set => _lzmaDictionarySize = value;
         }
 
         internal static void WriteLzmaProperties(Encoder encoder)

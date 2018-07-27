@@ -1,17 +1,17 @@
 ﻿namespace SevenZipTests
 {
+    using System;
     using System.Collections.Generic;
     using System.IO;
+    using System.Threading;
 
     using SevenZip;
 
     using NUnit.Framework;
 
     [TestFixture]
-    public class SevenZipExtractorTests
+    public class SevenZipExtractorTests : TestBase
     {
-        private const string OutputDirectory = "output";
-
         public static List<TestFile> TestFiles
         {
             get
@@ -30,20 +30,6 @@
 
                 return result;
             }
-        }
-
-        [SetUp]
-        public void SetUp()
-        {
-            // Ensures we're in the correct working directory (for test data files).
-            Directory.SetCurrentDirectory(TestContext.CurrentContext.TestDirectory);
-            Directory.CreateDirectory(OutputDirectory);
-        }
-
-        [TearDown]
-        public void TearDown()
-        {
-            Directory.Delete(OutputDirectory, true);
         }
 
         [Test]
@@ -86,20 +72,99 @@
             Assert.IsTrue(File.ReadAllText(Directory.GetFiles(OutputDirectory)[0]).StartsWith("Lorem ipsum dolor sit amet"));
         }
 
-        [TestCaseSource(nameof(TestFiles)), Category("FormatExtraction")]
+        [Test]
+        public void ExtractionWithCancellationTest()
+        {
+            using (var tmp = new SevenZipExtractor(@"TestData\multiple_files.7z"))
+            {
+                tmp.FileExtractionStarted += (s, e) =>
+                {
+                    if (e.FileInfo.Index == 2)
+                    {
+                        e.Cancel = true;
+                    }
+                };
+               
+                tmp.ExtractArchive(OutputDirectory);
+
+                Assert.AreEqual(2, Directory.GetFiles(OutputDirectory).Length);
+            }
+        }
+
+        [Test]
+        public void ExtractionFromStreamTest()
+        {
+            // TODO: Rewrite this to test against more/all TestData archives.
+
+            using (var tmp = new SevenZipExtractor(File.OpenRead(@"TestData\multiple_files.7z")))
+            {
+                tmp.ExtractArchive(OutputDirectory);
+                Assert.AreEqual(3, Directory.GetFiles(OutputDirectory).Length);
+            }
+        }
+
+        [Test]
+        public void ExtractionToStreamTest()
+        {
+            using (var tmp = new SevenZipExtractor(@"TestData\multiple_files.7z"))
+            {
+                using (var fileStream = new FileStream(Path.Combine(OutputDirectory, "streamed_file.txt"), FileMode.Create))
+                {
+                    tmp.ExtractFile(1, fileStream);
+                }
+            }
+
+            Assert.AreEqual(1, Directory.GetFiles(OutputDirectory).Length);
+
+            var extractedFile = Directory.GetFiles(OutputDirectory)[0];
+
+            Assert.AreEqual("file2", File.ReadAllText(extractedFile));
+        }
+
+        [Test]
+        public void ThreadedExtractionTest()
+        {
+            Assert.Ignore("Not translated yet.");
+
+            var t1 = new Thread(() =>
+            {
+                using (var tmp = new SevenZipExtractor(@"D:\Temp\7z465_extra.7z"))
+                {
+                    tmp.FileExtractionStarted += (s, e) =>
+                    {
+                        Console.WriteLine(String.Format("[{0}%] {1}",
+                            e.PercentDone, e.FileInfo.FileName));
+                    };
+                    tmp.ExtractionFinished += (s, e) => { Console.WriteLine("Finished!"); };
+                    tmp.ExtractArchive(@"D:\Temp\t1");
+                }
+            });
+            var t2 = new Thread(() =>
+            {
+                using (var tmp = new SevenZipExtractor(@"D:\Temp\7z465_extra.7z"))
+                {
+                    tmp.FileExtractionStarted += (s, e) =>
+                    {
+                        Console.WriteLine(String.Format("[{0}%] {1}",
+                            e.PercentDone, e.FileInfo.FileName));
+                    };
+                    tmp.ExtractionFinished += (s, e) => { Console.WriteLine("Finished!"); };
+                    tmp.ExtractArchive(@"D:\Temp\t2");
+                }
+            });
+            t1.Start();
+            t2.Start();
+            t1.Join();
+            t2.Join();
+        }
+
+        [Test, TestCaseSource(nameof(TestFiles))]
         public void ExtractDifferentFormatsTest(TestFile file)
         {
             using (var extractor = new SevenZipExtractor(file.FilePath))
             {
-                try
-                {
-                    extractor.ExtractArchive(OutputDirectory);
-                    Assert.AreEqual(1, Directory.GetFiles(OutputDirectory).Length);
-                }
-                catch (SevenZipException)
-                {
-                    Assert.Warn("Old issue, needs to be investigated.");
-                }
+                extractor.ExtractArchive(OutputDirectory);
+                Assert.AreEqual(1, Directory.GetFiles(OutputDirectory).Length);
             }
         }
     }
