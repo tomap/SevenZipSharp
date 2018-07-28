@@ -8,3 +8,5 @@ Backup/
 .vs/**
 /packages/**
 /[Ss]tage/**
+/TestResult.xml
+/coverage.xml
