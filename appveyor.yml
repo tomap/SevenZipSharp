@@ -13,6 +13,10 @@ assembly_info:
 before_build:
   nuget restore SevenZip.sln
 
+environment:
+  COVERALLS_REPO_TOKEN:  
+    secure: uhHSJvf0G4qxIzWt2740yqjI1a5jGRM0bUFdf3nWGUYrHBc0rJXHn0wExDiWMz/O
+
 build:
   parallel: true
   project: 'SevenZip.sln'
@@ -21,8 +25,12 @@ build:
 after_build:
   - cmd: nuget pack package.nuspec -version "%APPVEYOR_BUILD_VERSION%"
 
+after_test: 
+  - cmd: Stage\packages\OpenCover.4.6.519\tools\OpenCover.Console.exe -register:user -filter:"+[SevenZipTests]*" -target:"Stage\packages\NUnit.ConsoleRunner.3.8.0\tools\nunit3-console.exe" -targetargs:"/domain:single Stage/Release/SevenZipTests.dll" -output:coverage.xml
+  - cmd: Stage\packages\coveralls.io.1.4.2\tools\coveralls.net.exe --opencover coverage.xml -r %COVERALLS_REPO_TOKEN%
+
 artifacts:
-  path: 'Squid-Box.SevenZip*.nupkg'
+  - path: 'Squid-Box.SevenZip*.nupkg'
 
 deploy:
   provider: NuGet

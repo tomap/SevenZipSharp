@@ -5,7 +5,12 @@ Main differences from the original project:
 * .Net 4.5 instead of 2.0
 * Only .Net 4.5 works (no Mobile or Mono compatibility, but if you do a PR ...)
 * Has a nuget package: https://www.nuget.org/packages/Squid-Box.SevenZipSharp/
-* CI with appveyor [![Build status](https://ci.appveyor.com/api/projects/status/bgp7yh7f0fpamt95?svg=true)](https://ci.appveyor.com/project/squid-box/sevenzipsharp)
+
+
+## Continuous Integration
+[![Build status](https://ci.appveyor.com/api/projects/status/bgp7yh7f0fpamt95?svg=true)](https://ci.appveyor.com/project/squid-box/sevenzipsharp)
+
+[![Coverage Status](https://coveralls.io/repos/github/squid-box/SevenZipSharp/badge.svg)](https://coveralls.io/github/squid-box/SevenZipSharp)
 
 Issues, suggestions, and Pull Requests are welcome!
 
