@@ -16,12 +16,12 @@
         [Test]
         public void CurrentLibraryFeaturesTest()
         {
-            Assert.Ignore("Not sure CurrentLibraryFeatures actually work as intended.");
-
-            var features = SevenZip.SevenZipExtractor.CurrentLibraryFeatures;
+            var features = SevenZipBase.CurrentLibraryFeatures;
             Console.WriteLine(features);
-            Assert.AreEqual(LibraryFeature.ExtractAll, features);
-            Assert.AreEqual(LibraryFeature.CompressAll, features);
+
+            Assert.IsTrue(features.HasFlag(LibraryFeature.ExtractAll));
+            Assert.IsTrue(features.HasFlag(LibraryFeature.CompressAll));
+            Assert.IsTrue(features.HasFlag(LibraryFeature.Modify));
         }
 
         [Test]
