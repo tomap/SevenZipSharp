@@ -55,6 +55,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="SevenZipCompressorAsynchronousTests.cs" />
+    <Compile Include="SevenZipExtractorAsynchronousTests.cs" />
     <Compile Include="TestBase.cs" />
     <Compile Include="FileCheckerTests.cs" />
     <Compile Include="MiscellaneousTests.cs" />
