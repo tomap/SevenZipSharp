@@ -1,7 +1,7 @@
 This is a fork from [tomap's fork](https://github.com/tomap/SevenZipSharp) of the [original Codeplex project](https://archive.codeplex.com/?p=sevenzipsharp).
 
 [![Build status](https://ci.appveyor.com/api/projects/status/bgp7yh7f0fpamt95?svg=true)](https://ci.appveyor.com/project/squid-box/sevenzipsharp)
-[![Coverage Status](https://coveralls.io/repos/github/squid-box/SevenZipSharp/badge.svg?branch=coveralls)](https://coveralls.io/github/squid-box/SevenZipSharp?branch=coveralls)
+[![Coverage Status](https://coveralls.io/repos/github/squid-box/SevenZipSharp/badge.svg)](https://coveralls.io/github/squid-box/SevenZipSharp)
 
 [Link to NuGet package "Squid-Box.SevenZipSharp"](https://www.nuget.org/packages/Squid-Box.SevenZipSharp/)
 
