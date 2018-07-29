@@ -52,15 +52,17 @@
         [Test]
         public void SerializationTest()
         {
-            Assert.Ignore("Not translated yet.");
+            var ex = new ArgumentException("blahblah");
+            var bf = new BinaryFormatter();
 
-            ArgumentException ex = new ArgumentException("blahblah");
-            BinaryFormatter bf = new BinaryFormatter();
-            using (MemoryStream ms = new MemoryStream())
+            using (var ms = new MemoryStream())
             {
-                bf.Serialize(ms, ex);
-                SevenZipCompressor cmpr = new SevenZipCompressor();
-                cmpr.CompressStream(ms, File.Create(@"d:\Temp\test.7z"));
+                using (var fileStream = File.Create(TemporaryFile))
+                {
+                    bf.Serialize(ms, ex);
+                    SevenZipCompressor cmpr = new SevenZipCompressor();
+                    cmpr.CompressStream(ms, fileStream);
+                }
             }
         }
 
