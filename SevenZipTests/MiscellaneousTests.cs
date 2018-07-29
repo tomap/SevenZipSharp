@@ -3,7 +3,6 @@
     using System;
     using System.Diagnostics;
     using System.IO;
-    using System.Reflection;
     using System.Runtime.Serialization.Formatters.Binary;
 
     using NUnit.Framework;
@@ -22,31 +21,6 @@
             Assert.IsTrue(features.HasFlag(LibraryFeature.ExtractAll));
             Assert.IsTrue(features.HasFlag(LibraryFeature.CompressAll));
             Assert.IsTrue(features.HasFlag(LibraryFeature.Modify));
-        }
-
-        [Test]
-        public void ToughnessTest()
-        {
-            Assert.Ignore("Not translated yet.");
-
-            Console.ReadKey();
-            string exeAssembly = Assembly.GetAssembly(typeof(SevenZipExtractor)).FullName;
-            AppDomain dom = AppDomain.CreateDomain("Extract");
-            for (int i = 0; i < 1000; i++)
-            {
-                using (SevenZipExtractor tmp =
-                    (SevenZipExtractor)dom.CreateInstance(
-                        exeAssembly, typeof(SevenZipExtractor).FullName,
-                        false, BindingFlags.CreateInstance, null,
-                        new object[] { @"D:\Temp\7z465_extra.7z" },
-                        System.Globalization.CultureInfo.CurrentCulture, null, null).Unwrap())
-                {
-                    tmp.ExtractArchive(@"D:\Temp\!Пусто");
-                }
-                Console.Clear();
-                Console.WriteLine(i);
-            }
-            AppDomain.Unload(dom);
         }
 
         [Test]
