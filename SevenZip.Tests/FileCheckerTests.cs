@@ -1,4 +1,4 @@
-﻿namespace SevenZipTests
+﻿namespace SevenZip.Tests
 {
     using System.Collections.Generic;
     using System.IO;

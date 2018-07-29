@@ -8,8 +8,8 @@
     <ProjectGuid>{67192E62-C7FE-485F-BEC4-05734A943FAA}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>SevenZipTests</RootNamespace>
-    <AssemblyName>SevenZipTests</AssemblyName>
+    <RootNamespace>SevenZip.Tests</RootNamespace>
+    <AssemblyName>SevenZip.Tests</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <NuGetPackageImportStamp>

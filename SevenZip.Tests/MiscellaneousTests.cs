@@ -1,4 +1,4 @@
-﻿namespace SevenZipTests
+﻿namespace SevenZip.Tests
 {
     using System;
     using System.Diagnostics;
@@ -16,7 +16,6 @@
         public void CurrentLibraryFeaturesTest()
         {
             var features = SevenZipBase.CurrentLibraryFeatures;
-            Console.WriteLine(features);
 
             Assert.IsTrue(features.HasFlag(LibraryFeature.ExtractAll));
             Assert.IsTrue(features.HasFlag(LibraryFeature.CompressAll));
