@@ -13,16 +13,6 @@
     public class MiscellaneousTests : TestBase
     {
         [Test]
-        public void CurrentLibraryFeaturesTest()
-        {
-            var features = SevenZipBase.CurrentLibraryFeatures;
-
-            Assert.IsTrue(features.HasFlag(LibraryFeature.ExtractAll));
-            Assert.IsTrue(features.HasFlag(LibraryFeature.CompressAll));
-            Assert.IsTrue(features.HasFlag(LibraryFeature.Modify));
-        }
-
-        [Test]
         public void SerializationTest()
         {
             var ex = new ArgumentException("blahblah");
