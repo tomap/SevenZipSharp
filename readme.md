@@ -1,7 +1,11 @@
 This is a fork from [tomap's fork](https://github.com/tomap/SevenZipSharp) of the [original Codeplex project](https://archive.codeplex.com/?p=sevenzipsharp).
 
-[![Build status](https://ci.appveyor.com/api/projects/status/bgp7yh7f0fpamt95?svg=true)](https://ci.appveyor.com/project/squid-box/sevenzipsharp)
-[![Coverage Status](https://coveralls.io/repos/github/squid-box/SevenZipSharp/badge.svg)](https://coveralls.io/github/squid-box/SevenZipSharp)
+## CI
+
+|   Branch  | Appveyor | Coveralls |
+|-----------|----------|-----------|
+| master | [![Build status](https://ci.appveyor.com/api/projects/status/bgp7yh7f0fpamt95/branch/master?svg=true)](https://ci.appveyor.com/project/squid-box/sevenzipsharp/branch/master) | [![Coverage Status](https://coveralls.io/repos/github/squid-box/SevenZipSharp/badge.svg?branch=master)](https://coveralls.io/github/squid-box/SevenZipSharp?branch=master) |
+| dev | [![Build status](https://ci.appveyor.com/api/projects/status/bgp7yh7f0fpamt95/branch/dev?svg=true)](https://ci.appveyor.com/project/squid-box/sevenzipsharp/branch/dev) | [![Coverage Status](https://coveralls.io/repos/github/squid-box/SevenZipSharp/badge.svg?branch=dev)](https://coveralls.io/github/squid-box/SevenZipSharp?branch=dev) |
 
 [Link to NuGet package "Squid-Box.SevenZipSharp"](https://www.nuget.org/packages/Squid-Box.SevenZipSharp/)
 

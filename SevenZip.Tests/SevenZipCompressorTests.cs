@@ -1,4 +1,4 @@
-﻿namespace SevenZipTests
+﻿namespace SevenZip.Tests
 {
     using System;
     using System.Collections.Generic;
@@ -228,6 +228,7 @@
             }
         }
 
+        [Test]
         public void ThreadedCompressionTest()
         {
             Assert.Ignore("Not translated yet.");
