@@ -190,7 +190,7 @@
         /// <param name="outStream">The destination compressed stream.</param>
         /// <param name="password">The archive password.</param>
         /// <exception cref="System.ArgumentException">ArgumentException: at least one of the specified streams is invalid.</exception>
-        public void BeginCompressStream(Stream inStream, Stream outStream, string password)
+        public void BeginCompressStream(Stream inStream, Stream outStream, string password = "")
         {
             SaveContext();
             (new CompressStream2Delegate(CompressStream)).BeginInvoke(inStream, outStream, password, AsyncCallbackImplementation, this);            
