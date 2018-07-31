@@ -30,12 +30,15 @@
         }
 
         [Test]
-        public void CreateSfxArchiveTest()
+        public void CreateSfxArchiveTest([Values]SfxModule sfxModule)
         {
+            if (sfxModule.HasFlag(SfxModule.Custom))
+            {
+                Assert.Ignore("No idea how to use SfxModule \"Custom\".");
+            }
+
             var sfxFile = Path.Combine(OutputDirectory, "sfx.exe");
-
-            var sfx = new SevenZipSfx();
-
+            var sfx = new SevenZipSfx(sfxModule);
             var compressor = new SevenZipCompressor {DirectoryStructure = false};
 
             compressor.CompressFiles(TemporaryFile, @"TestData\zip.zip");
