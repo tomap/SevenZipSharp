@@ -1,6 +1,7 @@
 ﻿namespace SevenZip.Tests
 {
     using System.IO;
+    using System.Threading;
 
     using NUnit.Framework;
 
@@ -20,7 +21,19 @@
         [TearDown]
         public void TearDown()
         {
-            Directory.Delete(OutputDirectory, true);
+            // Sometimes the Sfx test locks the .exe file for a few milliseconds.
+            for (var n = 0; n < 10; n++)
+            {
+                try
+                {
+                    Directory.Delete(OutputDirectory, true);
+                    break;
+                }
+                catch
+                {
+                    Thread.Sleep(20);
+                }
+            }
         }
     }
 }

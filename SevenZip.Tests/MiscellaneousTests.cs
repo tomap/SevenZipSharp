@@ -32,18 +32,15 @@
         [Test]
         public void CreateSfxArchiveTest()
         {
-            Assert.Ignore("Legacy bug, needs investigation.");
-
             var sfxFile = Path.Combine(OutputDirectory, "sfx.exe");
 
             var sfx = new SevenZipSfx();
-            var compressor = new SevenZipCompressor();
 
-            using (var ms = new MemoryStream())
-            {
-                compressor.CompressFiles(ms, @"TestData\zip.zip");
-                sfx.MakeSfx(ms, sfxFile);
-            }
+            var compressor = new SevenZipCompressor {DirectoryStructure = false};
+
+            compressor.CompressFiles(TemporaryFile, @"TestData\zip.zip");
+
+            sfx.MakeSfx(TemporaryFile, sfxFile);
 
             Assert.IsTrue(File.Exists(sfxFile));
 
