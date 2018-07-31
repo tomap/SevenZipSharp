@@ -121,8 +121,8 @@
     <Compile Include="StreamWrappers.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="sfx\7zS.sfx" />
-    <None Include="sfx\7zxSD_All.sfx" />
+    <EmbeddedResource Include="sfx\7zS.sfx" />
+    <EmbeddedResource Include="sfx\7zxSD_All.sfx" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="sfx\Configs.xml" />
@@ -138,10 +138,10 @@
     <Content Include="sfx\Configs.xslt" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="sfx\7zSD.sfx" />
-    <None Include="sfx\7zxSD_Deflate.sfx" />
-    <None Include="sfx\7zxSD_LZMA.sfx" />
-    <None Include="sfx\7zxSD_PPMd.sfx" />
+    <EmbeddedResource Include="sfx\7zSD.sfx" />
+    <EmbeddedResource Include="sfx\7zxSD_Deflate.sfx" />
+    <EmbeddedResource Include="sfx\7zxSD_LZMA.sfx" />
+    <EmbeddedResource Include="sfx\7zxSD_PPMd.sfx" />
     <EmbeddedResource Include="sfx\Configs.xsd" />
   </ItemGroup>
   <ItemGroup>
@@ -156,14 +156,14 @@
     <EmbeddedResource Include="arch\Test.txt.xz" />
     <EmbeddedResource Include="arch\Test.zip" />
     <None Include="SevenZip.snk" />
-    <None Include="sfx\7z.sfx" />
-    <None Include="sfx\7zCon.sfx" />
-    <None Include="sfx\7zxSD_All_x64.sfx" />
-    <None Include="sfx\7zxSD_Deflate_x64.sfx" />
-    <None Include="sfx\7zxSD_LZMA2.sfx" />
-    <None Include="sfx\7zxSD_LZMA2_x64.sfx" />
-    <None Include="sfx\7zxSD_LZMA_x64.sfx" />
-    <None Include="sfx\7zxSD_PPMd_x64.sfx" />
+    <EmbeddedResource Include="sfx\7z.sfx" />
+    <EmbeddedResource Include="sfx\7zCon.sfx" />
+    <EmbeddedResource Include="sfx\7zxSD_All_x64.sfx" />
+    <EmbeddedResource Include="sfx\7zxSD_Deflate_x64.sfx" />
+    <EmbeddedResource Include="sfx\7zxSD_LZMA2.sfx" />
+    <EmbeddedResource Include="sfx\7zxSD_LZMA2_x64.sfx" />
+    <EmbeddedResource Include="sfx\7zxSD_LZMA_x64.sfx" />
+    <EmbeddedResource Include="sfx\7zxSD_PPMd_x64.sfx" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">

@@ -44,17 +44,30 @@
     /// </summary>
     public class SevenZipSfx
     {
-        private static readonly Dictionary<SfxModule, List<string>> SfxSupportedModuleNames =
-            new Dictionary<SfxModule, List<string>>(3)
+        private static Dictionary<SfxModule, List<string>> SfxSupportedModuleNames
+        {
+            get
             {
-                {SfxModule.Default, new List<string>(1) {"7zxSD_All.sfx"}},
-                {SfxModule.Simple, new List<string>(2) {"7z.sfx", "7zCon.sfx"}},
-                {SfxModule.Installer, new List<string>(2) {"7zS.sfx", "7zSD.sfx"}},
+                var result = new Dictionary<SfxModule, List<string>>(3)
                 {
-                    SfxModule.Extended,
-                    new List<string>(4) {"7zxSD_All.sfx", "7zxSD_Deflate", "7zxSD_LZMA", "7zxSD_PPMd"}
-                    }
-            };
+                    {SfxModule.Simple, new List<string>(2) {"7z.sfx", "7zCon.sfx"}},
+                    {SfxModule.Installer, new List<string>(2) {"7zS.sfx", "7zSD.sfx"}}
+                };
+
+                if (Environment.Is64BitProcess)
+                {
+                    result.Add(SfxModule.Default, new List<string>(1) { "7zxSD_All_x64.sfx" });
+                    result.Add(SfxModule.Extended, new List<string>(4) { "7zxSD_All_x64.sfx", "7zxSD_Deflate_x64", "7zxSD_LZMA_x64", "7zxSD_PPMd_x64" });
+                }
+                else
+                {
+                    result.Add(SfxModule.Default, new List<string>(1) { "7zxSD_All.sfx" });
+                    result.Add(SfxModule.Extended, new List<string>(4) { "7zxSD_All.sfx", "7zxSD_Deflate", "7zxSD_LZMA", "7zxSD_PPMd" });
+                }
+
+                return result;
+            }
+        }
 
         private SfxModule _module = SfxModule.Default;
         private string _moduleFileName;
@@ -395,21 +408,19 @@
 
             ValidateSettings(settings);
 
-            using (Stream sfx = _module == SfxModule.Default
-                                    ? Assembly.GetExecutingAssembly().GetManifestResourceStream(
-                                            GetResourceString(SfxSupportedModuleNames[_module][0]))
-                                    : new FileStream(_moduleFileName, FileMode.Open, FileAccess.Read,
-                                                     FileShare.ReadWrite))
+            using (var sfx = Assembly.GetExecutingAssembly().GetManifestResourceStream(GetResourceString(SfxSupportedModuleNames[_module][0])))
             {
                 WriteStream(sfx, sfxStream);
             }
+
             if (_module == SfxModule.Custom || _sfxCommands[_module] != null)
             {
-                using (Stream set = GetSettingsStream(settings))
+                using (var set = GetSettingsStream(settings))
                 {
                     WriteStream(set, sfxStream);
                 }
             }
+
             WriteStream(archive, sfxStream);
         }
 
