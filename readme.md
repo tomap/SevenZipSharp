@@ -1,6 +1,6 @@
-This is a fork from [tomap's fork](https://github.com/tomap/SevenZipSharp) of the [original Codeplex project](https://archive.codeplex.com/?p=sevenzipsharp).
+This is a fork from [tomap's fork](https://github.com/tomap/SevenZipSharp) of the [original CodePlex project](https://archive.codeplex.com/?p=sevenzipsharp).
 
-## CI
+## Continuous Integration
 
 |   Branch  | Appveyor | Coveralls |
 |-----------|----------|-----------|
@@ -9,7 +9,15 @@ This is a fork from [tomap's fork](https://github.com/tomap/SevenZipSharp) of th
 
 [Link to NuGet package "Squid-Box.SevenZipSharp"](https://www.nuget.org/packages/Squid-Box.SevenZipSharp/)
 
-Issues, suggestions, and Pull Requests are welcome!
+## Changes from original project
+As required by the GNU GPL 3.0 license, here's a rough list of what has changed since the original CodePlex project, including changes made in tomap's fork.
+
+* Target .NET framework changed from 2.0 to 4.5.
+* No support for Mono or Mobile.
+* Produces a NuGet package.
+* Continous Integration added, both building and deploying, and code test coverage.
+* Tests re-written to NUnit 3 test cases.
+* General code cleanup.
 
 -------------------------------------------------------------
 
