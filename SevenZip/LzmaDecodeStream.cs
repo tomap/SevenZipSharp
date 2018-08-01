@@ -1,25 +1,10 @@
-﻿/*  This file is part of SevenZipSharp.
-
-    SevenZipSharp is free software: you can redistribute it and/or modify
-    it under the terms of the GNU Lesser General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
-
-    SevenZipSharp is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU Lesser General Public License for more details.
-
-    You should have received a copy of the GNU Lesser General Public License
-    along with SevenZipSharp.  If not, see <http://www.gnu.org/licenses/>.
-*/
-
-using System;
-using System.IO;
-using SevenZip.Sdk.Compression.Lzma;
-
-namespace SevenZip
+﻿namespace SevenZip
 {
+    using System;
+    using System.IO;
+
+    using SevenZip.Sdk.Compression.Lzma;
+
 #if LZMA_STREAM
     /// <summary>
     /// The stream which decompresses data with LZMA on the fly.
@@ -49,46 +34,22 @@ namespace SevenZip
         /// <summary>
         /// Gets the chunk size.
         /// </summary>
-        public int ChunkSize
-        {
-            get
-            {
-                return (int) _buffer.Length;
-            }
-        }
+        public int ChunkSize => (int) _buffer.Length;
 
         /// <summary>
         /// Gets a value indicating whether the current stream supports reading.
         /// </summary>
-        public override bool CanRead
-        {
-            get
-            {
-                return true;
-            }
-        }
+        public override bool CanRead => true;
 
         /// <summary>
         /// Gets a value indicating whether the current stream supports seeking.
         /// </summary>
-        public override bool CanSeek
-        {
-            get
-            {
-                return false;
-            }
-        }
+        public override bool CanSeek => false;
 
         /// <summary>
         /// Gets a value indicating whether the current stream supports writing.
         /// </summary>
-        public override bool CanWrite
-        {
-            get
-            {
-                return false;
-            }
-        }
+        public override bool CanWrite => false;
 
         /// <summary>
         /// Gets the length in bytes of the output stream.
@@ -101,6 +62,7 @@ namespace SevenZip
                 {
                     return _input.Length;
                 }
+
                 return _buffer.Length;
             }
         }
@@ -118,10 +80,7 @@ namespace SevenZip
                 }
                 return _buffer.Position;
             }
-            set
-            {
-                throw new NotSupportedException();
-            }
+            set => throw new NotSupportedException();
         }
 
         private void ReadChunk()

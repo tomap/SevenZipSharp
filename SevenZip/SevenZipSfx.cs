@@ -1,33 +1,16 @@
-﻿/*  This file is part of SevenZipSharp.
-
-    SevenZipSharp is free software: you can redistribute it and/or modify
-    it under the terms of the GNU Lesser General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
-
-    SevenZipSharp is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU Lesser General Public License for more details.
-
-    You should have received a copy of the GNU Lesser General Public License
-    along with SevenZipSharp.  If not, see <http://www.gnu.org/licenses/>.
-*/
-
-
-using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.IO;
-using System.Reflection;
-using System.Text;
-using System.Xml;
-using System.Xml.Schema;
-
-namespace SevenZip
+﻿namespace SevenZip
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Globalization;
+    using System.IO;
+    using System.Reflection;
+    using System.Text;
+    using System.Xml;
+    using System.Xml.Schema;
+
 #if SFX
-    using SfxSettings = Dictionary<string, string>;
+    using SfxSettings = System.Collections.Generic.Dictionary<string, string>;
 
     /// <summary>
     /// Sfx module choice enumeration
@@ -61,17 +44,30 @@ namespace SevenZip
     /// </summary>
     public class SevenZipSfx
     {
-        private static readonly Dictionary<SfxModule, List<string>> SfxSupportedModuleNames =
-            new Dictionary<SfxModule, List<string>>(3)
+        private static Dictionary<SfxModule, List<string>> SfxSupportedModuleNames
+        {
+            get
             {
-                {SfxModule.Default, new List<string>(1) {"7zxSD_All.sfx"}},
-                {SfxModule.Simple, new List<string>(2) {"7z.sfx", "7zCon.sfx"}},
-                {SfxModule.Installer, new List<string>(2) {"7zS.sfx", "7zSD.sfx"}},
+                var result = new Dictionary<SfxModule, List<string>>(3)
                 {
-                    SfxModule.Extended,
-                    new List<string>(4) {"7zxSD_All.sfx", "7zxSD_Deflate", "7zxSD_LZMA", "7zxSD_PPMd"}
-                    }
-            };
+                    {SfxModule.Simple, new List<string>(2) {"7z.sfx", "7zCon.sfx"}},
+                    {SfxModule.Installer, new List<string>(2) {"7zS.sfx", "7zSD.sfx"}}
+                };
+
+                if (Environment.Is64BitProcess)
+                {
+                    result.Add(SfxModule.Default, new List<string>(1) { "7zxSD_All_x64.sfx" });
+                    result.Add(SfxModule.Extended, new List<string>(4) { "7zxSD_All_x64.sfx", "7zxSD_Deflate_x64", "7zxSD_LZMA_x64", "7zxSD_PPMd_x64" });
+                }
+                else
+                {
+                    result.Add(SfxModule.Default, new List<string>(1) { "7zxSD_All.sfx" });
+                    result.Add(SfxModule.Extended, new List<string>(4) { "7zxSD_All.sfx", "7zxSD_Deflate", "7zxSD_LZMA", "7zxSD_PPMd" });
+                }
+
+                return result;
+            }
+        }
 
         private SfxModule _module = SfxModule.Default;
         private string _moduleFileName;
@@ -114,23 +110,14 @@ namespace SevenZip
         /// <summary>
         /// Gets the sfx module type.
         /// </summary>
-        public SfxModule SfxModule
-        {
-            get
-            {
-                return _module;
-            }
-        }
+        public SfxModule SfxModule => _module;
 
         /// <summary>
         /// Gets or sets the custom sfx module file name
         /// </summary>
         public string ModuleFileName
         {
-            get
-            {
-                return _moduleFileName;
-            }
+            get => _moduleFileName;
 
             set
             {
@@ -138,10 +125,12 @@ namespace SevenZip
                 {
                     throw new ArgumentException("The specified file does not exist.");
                 }
+
                 _moduleFileName = value;
                 _module = SfxModule.Custom;
-                string sfxName = Path.GetFileName(value);
-                foreach (SfxModule mod in SfxSupportedModuleNames.Keys)
+                var sfxName = Path.GetFileName(value);
+
+                foreach (var mod in SfxSupportedModuleNames.Keys)
                 {
                     if (SfxSupportedModuleNames[mod].Contains(sfxName))
                     {
@@ -158,11 +147,7 @@ namespace SevenZip
 
         private static string GetResourceString(string str)
         {
-#if !WINCE
             return "SevenZip.sfx." + str;
-#else
-            return "SevenZipSharpMobile.sfx." + str;
-#endif
         }
 
         /// <summary>
@@ -352,6 +337,16 @@ namespace SevenZip
         /// <param name="dest">The destination stream to wrie to.</param>
         private static void WriteStream(Stream src, Stream dest)
         {
+            if (src == null)
+            {
+                throw new ArgumentNullException(nameof(src));
+            }
+
+            if (dest == null)
+            {
+                throw new ArgumentNullException(nameof(dest));
+            }
+
             src.Seek(0, SeekOrigin.Begin);
             var buf = new byte[32768];
             int bytesRead;
@@ -410,22 +405,22 @@ namespace SevenZip
             {
                 throw new ArgumentException("The specified output stream can not write.", "sfxStream");
             }
+
             ValidateSettings(settings);
-            using (Stream sfx = _module == SfxModule.Default
-                                    ? Assembly.GetExecutingAssembly().GetManifestResourceStream(
-                                            GetResourceString(SfxSupportedModuleNames[_module][0]))
-                                    : new FileStream(_moduleFileName, FileMode.Open, FileAccess.Read,
-                                                     FileShare.ReadWrite))
+
+            using (var sfx = Assembly.GetExecutingAssembly().GetManifestResourceStream(GetResourceString(SfxSupportedModuleNames[_module][0])))
             {
                 WriteStream(sfx, sfxStream);
             }
+
             if (_module == SfxModule.Custom || _sfxCommands[_module] != null)
             {
-                using (Stream set = GetSettingsStream(settings))
+                using (var set = GetSettingsStream(settings))
                 {
                     WriteStream(set, sfxStream);
                 }
             }
+
             WriteStream(archive, sfxStream);
         }
 

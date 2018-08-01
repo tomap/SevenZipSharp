@@ -1,43 +1,23 @@
-﻿/*  This file is part of SevenZipSharp.
-
-    SevenZipSharp is free software: you can redistribute it and/or modify
-    it under the terms of the GNU Lesser General public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
-
-    SevenZipSharp is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU Lesser General public License for more details.
-
-    You should have received a copy of the GNU Lesser General public License
-    along with SevenZipSharp.  If not, see <http://www.gnu.org/licenses/>.
-*/
-
-using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.IO;
-using System.Runtime.InteropServices;
-using System.Security.Permissions;
-#if !WINCE
-using FILETIME=System.Runtime.InteropServices.ComTypes.FILETIME;
-#elif WINCE
-using FILETIME=OpenNETCF.Runtime.InteropServices.ComTypes.FILETIME;
-#endif
-
-namespace SevenZip
+﻿namespace SevenZip
 {
-    #if UNMANAGED
+    using System;
+    using System.Collections.Generic;
+    using System.Globalization;
+    using System.IO;
+    using System.Runtime.InteropServices;
+    using System.Security.Permissions;
+    using FILETIME = System.Runtime.InteropServices.ComTypes.FILETIME;
+
+#if UNMANAGED
 
     /// <summary>
     /// The structure to fix x64 and x32 variant size mismatch.
     /// </summary>
     [StructLayout(LayoutKind.Sequential)]
     internal struct PropArray
-    {        
-        uint _cElems;
-        IntPtr _pElems;
+    {
+        readonly uint _cElems;
+        readonly IntPtr _pElems;
     }
 
     /// <summary>
@@ -83,13 +63,13 @@ namespace SevenZip
         /// <summary>
         /// FILETIME variant value.
         /// </summary>
-        [FieldOffset(8)] private FILETIME _fileTime;
+        [FieldOffset(8)] private readonly FILETIME _fileTime;
 
         /// <summary>
         /// The PropArray instance to fix the variant size on x64 bit systems.
         /// </summary>
         [FieldOffset(8)]
-        private PropArray _propArray;
+        private readonly PropArray _propArray;
 
         /// <summary>
         /// Gets or sets variant type.
@@ -283,10 +263,9 @@ namespace SevenZip
         {
             get
             {
-#if !WINCE
                 var sp = new SecurityPermission(SecurityPermissionFlag.UnmanagedCode);
                 sp.Demand();
-#endif
+
                 switch (VarType)
                 {
                     case VarEnum.VT_EMPTY:
@@ -306,7 +285,6 @@ namespace SevenZip
                         {
                             return Marshal.GetObjectForNativeVariant(propHandle.AddrOfPinnedObject());
                         }
-#if WINCE
                         catch (NotSupportedException)
                         {
                             switch (VarType)
@@ -323,7 +301,6 @@ namespace SevenZip
                                     return 0;
                             }
                         }
-#endif
                         finally
                         {
                             propHandle.Free();
@@ -339,7 +316,7 @@ namespace SevenZip
         /// <returns>true if the specified System.Object is equal to the current PropVariant; otherwise, false.</returns>
         public override bool Equals(object obj)
         {
-            return (obj is PropVariant) ? Equals((PropVariant) obj) : false;
+            return (obj is PropVariant variant) && Equals(variant);
         }
 
         /// <summary>
