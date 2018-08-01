@@ -1,31 +1,11 @@
-/*  This file is part of SevenZipSharp.
-
-    SevenZipSharp is free software: you can redistribute it and/or modify
-    it under the terms of the GNU Lesser General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
-
-    SevenZipSharp is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU Lesser General Public License for more details.
-
-    You should have received a copy of the GNU Lesser General Public License
-    along with SevenZipSharp.  If not, see <http://www.gnu.org/licenses/>.
-*/
-
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Runtime.InteropServices;
-#if MONO
-using SevenZip.Mono;
-using SevenZip.Mono.COM;
-#endif
-
 namespace SevenZip
 {
-    #if UNMANAGED
+    using System;
+    using System.Collections.Generic;
+    using System.IO;
+    using System.Runtime.InteropServices;
+
+#if UNMANAGED
     /// <summary>
     /// Callback to handle the archive opening
     /// </summary>
@@ -40,13 +20,7 @@ namespace SevenZip
         /// <summary>
         /// Gets the list of volume file names.
         /// </summary>
-        public IList<string> VolumeFileNames
-        {
-            get
-            {
-                return _volumeFileNames;
-            }
-        }
+        public IList<string> VolumeFileNames => _volumeFileNames;
 
         /// <summary>
         /// Performs the common initialization.
@@ -106,6 +80,12 @@ namespace SevenZip
 
         public int GetProperty(ItemPropId propId, ref PropVariant value)
         {
+            if (_fileInfo == null)
+            {
+                // We are likely opening an archive from a Stream, and no file or _fileInfo exists.
+                return 0;
+            }
+
             switch (propId)
             {
                 case ItemPropId.Name:
@@ -137,6 +117,7 @@ namespace SevenZip
                     value.Int64Value = _fileInfo.LastWriteTime.ToFileTime();
                     break;
             }
+
             return 0;
         }
 
@@ -205,9 +186,7 @@ namespace SevenZip
                 }
                 _wrappers = null;
             }
-#if MONO
-			libp7zInvokerRaw.FreeObject(Handle);	
-#endif
+
             GC.SuppressFinalize(this);
         }
 

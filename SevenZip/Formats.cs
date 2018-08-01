@@ -1,25 +1,9 @@
-﻿/*  This file is part of SevenZipSharp.
-
-    SevenZipSharp is free software: you can redistribute it and/or modify
-    it under the terms of the GNU Lesser General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
-
-    SevenZipSharp is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU Lesser General Public License for more details.
-
-    You should have received a copy of the GNU Lesser General Public License
-    along with SevenZipSharp.  If not, see <http://www.gnu.org/licenses/>.
-*/
-
-using System;
-using System.Collections.Generic;
-using System.IO;
-
-namespace SevenZip
+﻿namespace SevenZip
 {
+    using System;
+    using System.Collections.Generic;
+    using System.IO;
+
 #if UNMANAGED
     /// <summary>
     /// Readable archive format enumeration.
@@ -92,10 +76,15 @@ namespace SevenZip
         /// <remarks><a href="http://en.wikipedia.org/wiki/NSIS">Wikipedia information</a></remarks>
         Nsis,
         /// <summary>
-        /// RarLab Rar archive format.
+        /// RarLab Rar archive format, version 5.
         /// </summary>
         /// <remarks><a href="http://en.wikipedia.org/wiki/Rar">Wikipedia information</a></remarks>
         Rar,
+        /// <summary>
+        /// RarLab Rar archive format, version 4 or older.
+        /// </summary>
+        /// <remarks><a href="http://en.wikipedia.org/wiki/Rar">Wikipedia information</a></remarks>
+        Rar4,
         /// <summary>
         /// Open Rpm software package format.
         /// </summary>
@@ -400,7 +389,8 @@ namespace SevenZip
                 {InArchiveFormat.Lzh,       new Guid("23170f69-40c1-278a-1000-000110060000")},
                 {InArchiveFormat.Lzma,      new Guid("23170f69-40c1-278a-1000-0001100a0000")},
                 {InArchiveFormat.Nsis,      new Guid("23170f69-40c1-278a-1000-000110090000")},
-                {InArchiveFormat.Rar,       new Guid("23170f69-40c1-278a-1000-000110030000")},
+                {InArchiveFormat.Rar,       new Guid("23170f69-40c1-278a-1000-000110CC0000")},
+                {InArchiveFormat.Rar4,      new Guid("23170f69-40c1-278a-1000-000110030000")},
                 {InArchiveFormat.Rpm,       new Guid("23170f69-40c1-278a-1000-000110eb0000")},
                 {InArchiveFormat.Split,     new Guid("23170f69-40c1-278a-1000-000110ea0000")},
                 {InArchiveFormat.Tar,       new Guid("23170f69-40c1-278a-1000-000110ee0000")},
@@ -538,14 +528,15 @@ namespace SevenZip
             {"1F-8B-08",                                                        InArchiveFormat.GZip},
             {"75-73-74-61-72",                                                  InArchiveFormat.Tar},
             //257 byte offset
-            {"52-61-72-21-1A-07-00",                                            InArchiveFormat.Rar},
+            {"52-61-72-21-1A-07-00",                                            InArchiveFormat.Rar4},
+            {"52-61-72-21-1A-07-01-00",                                         InArchiveFormat.Rar},
             {"50-4B-03-04",								                        InArchiveFormat.Zip},
             {"5D-00-00-40-00",							                        InArchiveFormat.Lzma},
-            {"2D-6C-68",								                            InArchiveFormat.Lzh},
+            {"2D-6C-68",								                        InArchiveFormat.Lzh},
             //^ 2 byte offset
-            {"1F-9D-90",								                            InArchiveFormat.Lzw},
+            {"1F-9D-90",								                        InArchiveFormat.Lzw},
             {"60-EA",								                            InArchiveFormat.Arj},
-            {"42-5A-68",								                            InArchiveFormat.BZip2},
+            {"42-5A-68",								                        InArchiveFormat.BZip2},
             {"4D-53-43-46",								                        InArchiveFormat.Cab},
             {"49-54-53-46",								                        InArchiveFormat.Chm},
             {"21-3C-61-72-63-68-3E-0A-64-65-62-69-61-6E-2D-62-69-6E-61-72-79",	InArchiveFormat.Deb},
@@ -559,8 +550,8 @@ namespace SevenZip
             //0x400 byte offset
             {"48-2B",								                            InArchiveFormat.Hfs},
             {"FD-37-7A-58-5A",							                        InArchiveFormat.XZ},
-            {"46-4C-56",							                                InArchiveFormat.Flv},
-            {"46-57-53",							                                InArchiveFormat.Swf},
+            {"46-4C-56",							                            InArchiveFormat.Flv},
+            {"46-57-53",							                            InArchiveFormat.Swf},
             {"4D-5A",							                                InArchiveFormat.PE},
             {"7F-45-4C-46",							                            InArchiveFormat.Elf},
             {"78",                                                              InArchiveFormat.Dmg},
@@ -572,6 +563,7 @@ namespace SevenZip
         static Formats()
         {
             InSignatureFormatsReversed = new Dictionary<InArchiveFormat, string>(InSignatureFormats.Count);
+
             foreach (var pair in InSignatureFormats)
             {
                 InSignatureFormatsReversed.Add(pair.Value, pair.Key);
@@ -592,11 +584,14 @@ namespace SevenZip
                 throw new ArgumentException("File name is null or empty string!");
             }
             string extension = Path.GetExtension(fileName).Substring(1);
+
             if (!InExtensionFormats.ContainsKey(extension) && reportErrors)
             {
-                throw new ArgumentException("Extension \"" + extension +
-                                            "\" is not a supported archive file name extension.");
+                throw new ArgumentException("Extension \"" + extension + "\" is not a supported archive file name extension.");
+
+
             }
+
             return InExtensionFormats[extension];
         }
     }

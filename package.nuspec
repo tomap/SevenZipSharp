@@ -1,19 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <package xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 	<metadata xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
-		<id>SevenZipSharp.Net45</id>
-		<version>1.0.0</version>
-		<authors>Thomas Piart, markhor</authors>
-		<summary>Managed 7-zip library written in C# that provides data (self-)extraction and compression (all 7-zip formats are supported).</summary>
-		<description>It wraps 7z.dll or any compatible one and makes use of LZMA SDK.</description>
+		<id>Squid-Box.SevenZipSharp</id>
+		<version>1.1.0</version>
+		<authors>Joel Ahlgren, Thomas Piart, markhor</authors>
+		<summary>Managed 7-zip library written in C# (.NET 4.5) that provides data (self-)extraction and compression (all 7-zip formats are supported).</summary>
+		<description>Wraps 7z.dll or any compatible one and makes use of LZMA SDK.</description>
 		<language>en-US</language>
-		<licenseUrl>https://github.com/tomap/SevenZipSharp/license</licenseUrl>
-		<projectUrl>https://github.com/tomap/SevenZipSharp</projectUrl>
-		<tags>7z sevenzip sevenzipsharp</tags>
+		<licenseUrl>https://github.com/squid-box/SevenZipSharp/blob/master/license</licenseUrl>
+		<projectUrl>https://github.com/squid-box/SevenZipSharp</projectUrl>
+		<tags>7z sevenzip sevenzipsharp 7-zip</tags>
+		<releaseNotes>Fixed problems with creating self-extracting archives.</releaseNotes>
 	</metadata>
 	<files>
-		<file src="SevenZip\bin\Release\SevenZipSharp.dll" target="lib\net45" />
-		<file src="SevenZip\bin\Release\SevenZipSharp.pdb" target="lib\net45" />
+		<file src="Stage\Release\SevenZipSharp.dll" target="lib\net45" />
+		<file src="Stage\Release\SevenZipSharp.pdb" target="lib\net45" />
 	</files>
 </package>
-
