@@ -1,9 +1,6 @@
-# Looking for someone to maintain this project
+# THIS PROJECT IS DEAD
 
-Hi, I'm looking for someone to take over this project as I no longer have time to dedicate to it.
-
-If you would like to do so, please contact me via an issue, make a fork and do your first change.
-I can help you set up the CI and indicate on this README who is maintaining the project (name & url).
+Please use this actively maintained fork: https://github.com/squid-box/SevenZipSharp
 
 -------------------------------------------------------------
 This is a fork from Codeplex original project.
